@@ -1,19 +1,12 @@
-import { AppShell } from "@/components/layout/app-shell";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { studentNavigation } from "@/content/navigation";
+import { pageSeo } from "@/content/seo";
+import { StudentRegistrationView } from "@/features/student/components/student-registration-view";
+import { createPortalMetadata } from "@/lib/metadata";
+
+export const metadata = createPortalMetadata(
+  pageSeo.student.registration,
+  "Student",
+);
 
 export default function StudentRegistrationPage() {
-  return (
-    <AppShell
-      navItems={studentNavigation}
-      roleLabel="Student"
-      userName="Batul Hassan"
-    >
-      <PlaceholderPage
-        description="Register available course offerings for the current semester."
-        nextStep="Implement after course_offering and course_registration SQL are ready."
-        title="Course Registration"
-      />
-    </AppShell>
-  );
+  return <StudentRegistrationView />;
 }

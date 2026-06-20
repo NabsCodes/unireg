@@ -14,14 +14,14 @@
 
 - [x] Draft corrected ERD structure
 - [ ] Review ERD with Batul
-- [ ] Write normalized schema plan
-- [ ] Write `CREATE TABLE` SQL
-- [ ] Add seed data
-- [ ] Add transcript and GPA views
-- [ ] Add GPA/CGPA functions
-- [ ] Add result/grade trigger
-- [ ] Add transaction examples
-- [ ] Add sample queries for presentation
+- [x] Write normalized schema plan
+- [x] Write `CREATE TABLE` SQL
+- [x] Add seed data
+- [x] Add transcript and GPA views
+- [x] Add GPA/CGPA functions
+- [x] Add result/grade trigger
+- [x] Add transaction examples
+- [x] Add sample queries for presentation
 
 ## Application
 
@@ -32,12 +32,20 @@
 - [x] Install backend dependencies
 - [x] Verify frontend typecheck, lint, and production build
 - [x] Verify backend health test and lint
-- [ ] Implement auth and roles
-- [ ] Build admin setup screens
-- [ ] Build student course registration
-- [ ] Build lecturer result upload
-- [ ] Build student results and transcript
-- [ ] Add demo seed users
+- [x] Add initial read-only FastAPI endpoints
+- [x] Smoke test backend endpoints against seeded PostgreSQL data
+- [x] Build static admin setup/list screens with demo data
+- [x] Build static student course registration screen with demo data
+- [x] Build static lecturer result upload screen with demo data
+- [x] Build static student results and transcript screens with demo data
+- [x] Add demo seed users in SQL seed data
+- [ ] Implement FastAPI auth and role enforcement
+- [ ] Add frontend API client and TanStack Query provider
+- [ ] Wire frontend screens to backend read endpoints
+- [ ] Add backend mutation endpoints for course registration and result upload
+- [ ] Wire frontend registration/result upload mutations
+- [ ] Add mobile card views for dense student/lecturer tables
+- [ ] Run full frontend + backend demo against local PostgreSQL
 
 ## Delivery
 

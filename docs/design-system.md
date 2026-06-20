@@ -1,0 +1,133 @@
+# UniReg Design System
+
+UniReg is a university operations portal — not a marketing site. The UI should feel institutional, calm, and dense enough for daily admin work while still looking polished enough to stand out in a capstone demo.
+
+## Brand Direction
+
+**School palette: burgundy + forest green**
+
+| Token | Use | Value |
+| --- | --- | --- |
+| Burgundy (`primary`, login panel) | Buttons, brand marks, accent bar | `#7A1F2E` |
+| Burgundy gradient (`bg-unireg-shell-gradient`) | Login brand panel and portal sidebar | `#7A1F2E` → `#561722` |
+| Forest green (`unireg-success`) | Success badges, completed states | `#1B6B4F` |
+| Slate neutrals | Page canvas, sidebar surface, borders | shadcn semantic tokens |
+| Amber (`unireg-warning`) | Pending / attention states | `#B45309` |
+
+Green is **semantic only**. Burgundy owns brand accents.
+
+## Typography
+
+- **UI font:** Plus Jakarta Sans
+- **Scale:** compact portal rhythm — titles `text-xl`/`text-2xl`, tables `text-sm`
+
+## Layout Shell
+
+```text
+┌ Sidebar         ┬─ Topbar ─────────────────────────┐
+│ UniReg + nav    │ session · user menu              │
+├─────────────────┴──────────────────────────────────┤
+│ PageHeader + tables / forms / cards                │
+└────────────────────────────────────────────────────┘
+```
+
+- Sidebar: burgundy gradient shell, white nav text, **no heavy shadows**
+- Collapse: `250px` → `70px`, mobile drawer below `md`
+- Shortcut: `Cmd/Ctrl+B`
+
+## shadcn-First Rule
+
+If shadcn ships it, use it. Check `components/ui/` before creating custom UI.
+
+Add missing primitives with the shadcn CLI instead of hand-writing replacements.
+
+## Frontend Data Layer
+
+```text
+features/{role}/api/use-*.ts   → React Query hooks
+lib/api/*.ts                   → fetch functions (mock or FastAPI)
+lib/api/client.ts              → apiGet / apiPost
+lib/api/query-keys.ts          → stable invalidation keys
+content/demo-data/             → seed-aligned mock rows (mock mode only)
+types/academic.ts              → UI row models
+types/api.ts                   → wire-format + mappers
+```
+
+- Default data source: `NEXT_PUBLIC_DATA_SOURCE=mock`
+- Live API: `NEXT_PUBLIC_DATA_SOURCE=api` + `NEXT_PUBLIC_API_BASE_URL`
+- Views should not import `content/demo-data/` directly once a screen has a query hook. Read through `lib/api/` instead.
+
+## Components
+
+### shadcn primitives (`components/ui/`)
+
+`button`, `badge`, `card`, `input`, `label`, `select`, `table`, `dialog`, `sheet`, `tabs`, `separator`, `skeleton`, `textarea`, `tooltip`, `dropdown-menu`, `avatar`, `form`, `field`, `pagination`
+
+### Shared patterns (`components/shared/`)
+
+| Component | Purpose |
+| --- | --- |
+| `DataTable` | Paginated TanStack + shadcn table (required for list screens) |
+| `DataTableToolbar` | Search, select filters, mobile filter sheet, reset |
+| `DataTableFilterTabs` | Quick status tabs with counts |
+| `DataTablePagination` | Page size + navigation controls |
+| `DataTableEmpty` | Empty state inside tables |
+| `QueryState` | Loading and error wrapper for query-driven views |
+| `StatCard` | Dashboard metric summary |
+| `StatusBadge` | Registration / result / audit status |
+
+### Layout (`components/layout/`)
+
+| Component | Purpose |
+| --- | --- |
+| `PortalShell` | Sidebar + topbar + main frame |
+| `PageHeader` | Title, description, optional actions |
+
+### Features (`features/`)
+
+| Area | Purpose |
+| --- | --- |
+| `portal/components/` | `PortalPage` |
+| `{role}/components/` | Role views |
+| `{role}/api/` | TanStack Query hooks |
+| `auth/components/` | Login form + brand panel |
+
+## Tables Rule
+
+All operational list screens must use `DataTable`:
+
+- sorting, filtering, and pagination via TanStack Table
+- search + select filters via `DataTableToolbar` when needed
+- empty state via `DataTableEmpty`
+- student-facing dense lists (registration, results, transcript) should pass `renderMobileCard` for a card layout below `md`
+
+Do not use one-off static HTML tables for scalable list pages.
+
+## Forms Rule
+
+- Schemas: `frontend/schemas/`
+- Helpers/utils: `frontend/lib/`
+- Client forms: `react-hook-form` + `zodResolver`
+- UI: shadcn `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage`
+
+## Visual Rules
+
+- **Radius:** `rounded-lg` max on cards and panels
+- **Shadows:** avoid heavy elevation; prefer borders
+- **Sidebar:** burgundy gradient shell (`bg-unireg-shell-gradient`), white nav text, minimal elevation
+- **Cards:** use shadcn `Card`, `CardHeader`, `CardContent` defaults only — do not add extra `p-*`, `pb-*`, or `pt-*` on card slots
+- **Mobile lists:** prefer card rows over horizontal table scroll on student-facing screens
+
+## Content Ownership
+
+- Navigation: `frontend/content/navigation.ts`
+- Portal context: `frontend/content/portal.ts`
+- SEO copy: `frontend/content/seo.ts`
+- Demo rows: `frontend/content/demo-data/` (consumed by `lib/api/` in mock mode)
+- Shared table filters: `frontend/content/table-filters.ts`
+
+## Metadata
+
+- Factories: `frontend/lib/metadata.ts`
+- Copy source: `frontend/content/seo.ts`
+- Route files export metadata and render a feature view

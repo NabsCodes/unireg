@@ -1,19 +1,9 @@
-import { AppShell } from "@/components/layout/app-shell";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { adminNavigation } from "@/content/navigation";
+import { pageSeo } from "@/content/seo";
+import { AdminLecturersView } from "@/features/admin/components/admin-lecturers-view";
+import { createPortalMetadata } from "@/lib/metadata";
+
+export const metadata = createPortalMetadata(pageSeo.admin.lecturers, "Admin");
 
 export default function AdminLecturersPage() {
-  return (
-    <AppShell
-      navItems={adminNavigation}
-      roleLabel="Admin"
-      userName="Admin User"
-    >
-      <PlaceholderPage
-        description="Manage lecturer records, staff numbers, departments, and course assignment readiness."
-        nextStep="Wire this screen to lecturer CRUD endpoints and assignment lookups."
-        title="Lecturers"
-      />
-    </AppShell>
-  );
+  return <AdminLecturersView />;
 }

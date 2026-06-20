@@ -1,0 +1,137 @@
+import type { ReactNode } from "react";
+
+import { Button } from "@/components/ui/button";
+import { StatusBadge } from "@/components/shared/status-badge";
+import type {
+  AvailableOfferingRow,
+  StudentResultRow,
+} from "@/types/academic";
+
+function formatScore(value: number | null): string {
+  return value === null ? "—" : String(value);
+}
+
+type DetailProps = {
+  label: string;
+  value: ReactNode;
+};
+
+function Detail({ label, value }: DetailProps) {
+  return (
+    <div>
+      <dt className="text-muted-foreground text-xs">{label}</dt>
+      <dd className="text-foreground mt-0.5 text-sm">{value}</dd>
+    </div>
+  );
+}
+
+export function RegistrationOfferingCard({
+  offering,
+}: {
+  offering: AvailableOfferingRow;
+}) {
+  return (
+    <article className="space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-medium">{offering.courseCode}</p>
+          <p className="text-muted-foreground text-sm">{offering.courseTitle}</p>
+        </div>
+        {offering.isRegistered ? (
+          <StatusBadge label="Registered" tone="active" />
+        ) : (
+          <Button disabled size="sm" variant="outline">
+            Register
+          </Button>
+        )}
+      </div>
+      <dl className="grid grid-cols-2 gap-3">
+        <Detail label="Credits" value={offering.creditUnits} />
+        <Detail label="Semester" value={offering.semester} />
+        <Detail
+          label="Slots"
+          value={
+            <span className="tabular-nums">
+              {offering.registered}/{offering.capacity}
+            </span>
+          }
+        />
+        <Detail
+          label="Offering"
+          value={
+            <StatusBadge
+              label={offering.status === "open" ? "Open" : "Closed"}
+              tone={offering.status === "open" ? "active" : "draft"}
+            />
+          }
+        />
+      </dl>
+    </article>
+  );
+}
+
+export function StudentResultCard({ result }: { result: StudentResultRow }) {
+  return (
+    <article className="space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-medium">{result.courseCode}</p>
+          <p className="text-muted-foreground text-sm">{result.courseTitle}</p>
+        </div>
+        {result.grade ? (
+          <StatusBadge label={result.grade} tone="completed" />
+        ) : (
+          <StatusBadge label="Pending" tone="pending" />
+        )}
+      </div>
+      <dl className="grid grid-cols-2 gap-3">
+        <Detail label="Semester" value={result.semester} />
+        <Detail label="Credits" value={result.creditUnits} />
+        <Detail label="CA" value={formatScore(result.caScore)} />
+        <Detail label="Exam" value={formatScore(result.examScore)} />
+        <Detail
+          label="Total"
+          value={
+            <span className="tabular-nums font-medium">
+              {formatScore(result.totalScore)}
+            </span>
+          }
+        />
+        <Detail
+          label="GPA"
+          value={
+            result.gradePoint === null ? "—" : result.gradePoint.toFixed(1)
+          }
+        />
+      </dl>
+    </article>
+  );
+}
+
+export function TranscriptRecordCard({ result }: { result: StudentResultRow }) {
+  return (
+    <article className="space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-medium">{result.courseCode}</p>
+          <p className="text-muted-foreground text-sm">{result.courseTitle}</p>
+        </div>
+        <p className="text-muted-foreground shrink-0 text-xs">
+          {result.session}
+        </p>
+      </div>
+      <dl className="grid grid-cols-2 gap-3">
+        <Detail label="Semester" value={result.semester} />
+        <Detail label="Credits" value={result.creditUnits} />
+        <Detail label="Score" value={formatScore(result.totalScore)} />
+        <Detail label="Grade" value={result.grade ?? "—"} />
+        <Detail
+          label="GPA"
+          value={
+            result.gradePoint === null ? "—" : result.gradePoint.toFixed(1)
+          }
+        />
+      </dl>
+    </article>
+  );
+}

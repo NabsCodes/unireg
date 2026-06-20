@@ -27,3 +27,17 @@ app/
   sql/       SQL loading helpers or query files
 tests/       backend tests
 ```
+
+## Current Read Endpoints
+
+```text
+GET /health
+GET /api/admin/dashboard
+GET /api/academic/course-offerings
+GET /api/students/{matric_no}/results
+GET /api/students/{matric_no}/transcript
+GET /api/lecturers/{staff_no}/courses
+```
+
+These endpoints read from SQL views and joins. Mutations should call database
+functions such as `register_course()` and `upload_result()` once auth is added.

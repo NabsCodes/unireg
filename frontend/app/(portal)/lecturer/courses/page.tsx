@@ -1,19 +1,12 @@
-import { AppShell } from "@/components/layout/app-shell";
-import { PlaceholderPage } from "@/components/layout/placeholder-page";
-import { lecturerNavigation } from "@/content/navigation";
+import { pageSeo } from "@/content/seo";
+import { LecturerCoursesView } from "@/features/lecturer/components/lecturer-courses-view";
+import { createPortalMetadata } from "@/lib/metadata";
+
+export const metadata = createPortalMetadata(
+  pageSeo.lecturer.courses,
+  "Lecturer",
+);
 
 export default function LecturerCoursesPage() {
-  return (
-    <AppShell
-      navItems={lecturerNavigation}
-      roleLabel="Lecturer"
-      userName="Dr. Gabriel Ayem"
-    >
-      <PlaceholderPage
-        description="List course offerings assigned to the signed-in lecturer."
-        nextStep="Wire this to course_assignment and course_offering joins."
-        title="Assigned Courses"
-      />
-    </AppShell>
-  );
+  return <LecturerCoursesView />;
 }
