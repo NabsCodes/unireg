@@ -23,7 +23,7 @@ export function AppShell({
 }: AppShellProps) {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-950 lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="border-b border-slate-200 bg-white lg:min-h-screen lg:border-b-0 lg:border-r">
+      <aside className="border-b border-slate-200 bg-white lg:min-h-screen lg:border-r lg:border-b-0">
         <div className="flex h-16 items-center border-b border-slate-200 px-5">
           <div>
             <p className="text-lg font-semibold text-blue-950">UniReg</p>

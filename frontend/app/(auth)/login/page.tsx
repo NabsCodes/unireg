@@ -39,7 +39,7 @@ export default function LoginPage() {
               Email, matric number, or staff number
             </span>
             <input
-              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm outline-none ring-teal-600 transition focus:ring-2"
+              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm ring-teal-600 transition outline-none focus:ring-2"
               placeholder="A00025332"
               type="text"
             />
@@ -48,7 +48,7 @@ export default function LoginPage() {
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Password</span>
             <input
-              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm outline-none ring-teal-600 transition focus:ring-2"
+              className="mt-1 h-10 w-full rounded-md border border-slate-300 px-3 text-sm ring-teal-600 transition outline-none focus:ring-2"
               placeholder="Enter password"
               type="password"
             />
@@ -63,7 +63,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 rounded-md border border-slate-200 bg-slate-50 p-3">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="text-xs font-medium tracking-wide text-slate-500 uppercase">
             Demo shortcuts
           </p>
           <div className="mt-3 grid gap-2">

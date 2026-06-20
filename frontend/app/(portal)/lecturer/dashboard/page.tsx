@@ -20,9 +20,21 @@ export default function LecturerDashboardPage() {
         </div>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <StatCard label="Assigned Courses" value="2" helper="Current semester" />
-          <StatCard label="Registered Students" value="80" helper="Across courses" />
-          <StatCard label="Pending Results" value="1" helper="One course outstanding" />
+          <StatCard
+            label="Assigned Courses"
+            value="2"
+            helper="Current semester"
+          />
+          <StatCard
+            label="Registered Students"
+            value="80"
+            helper="Across courses"
+          />
+          <StatCard
+            label="Pending Results"
+            value="1"
+            helper="One course outstanding"
+          />
         </section>
 
         <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -54,4 +66,3 @@ export default function LecturerDashboardPage() {
     </AppShell>
   );
 }
-

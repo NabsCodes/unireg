@@ -13,4 +13,3 @@ export function StatCard({ label, value, helper }: StatCardProps) {
     </div>
   );
 }
-

@@ -6,7 +6,11 @@ const stats = [
   { label: "Students", value: "245", helper: "Active academic records" },
   { label: "Courses", value: "48", helper: "Across all departments" },
   { label: "Registrations", value: "1,120", helper: "Current semester" },
-  { label: "Results Uploaded", value: "780", helper: "Awaiting transcript view" },
+  {
+    label: "Results Uploaded",
+    value: "780",
+    helper: "Awaiting transcript view",
+  },
 ];
 
 export default function AdminDashboardPage() {
@@ -47,4 +51,3 @@ export default function AdminDashboardPage() {
     </AppShell>
   );
 }
-

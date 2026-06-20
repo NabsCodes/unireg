@@ -20,8 +20,16 @@ export default function StudentDashboardPage() {
         </div>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <StatCard label="Registered Units" value="18" helper="Current semester" />
-          <StatCard label="Semester GPA" value="4.25" helper="Latest result set" />
+          <StatCard
+            label="Registered Units"
+            value="18"
+            helper="Current semester"
+          />
+          <StatCard
+            label="Semester GPA"
+            value="4.25"
+            helper="Latest result set"
+          />
           <StatCard label="CGPA" value="4.12" helper="Cumulative standing" />
         </section>
 
@@ -38,4 +46,3 @@ export default function StudentDashboardPage() {
     </AppShell>
   );
 }
-
