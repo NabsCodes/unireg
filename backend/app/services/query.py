@@ -16,3 +16,19 @@ def fetch_one(query: str, params: tuple[Any, ...] = ()) -> dict[str, Any] | None
             cursor.execute(query, params)
             row = cursor.fetchone()
             return dict(row) if row else None
+
+
+def execute_one(query: str, params: tuple[Any, ...] = ()) -> dict[str, Any] | None:
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            row = cursor.fetchone()
+            connection.commit()
+            return dict(row) if row else None
+
+
+def execute(query: str, params: tuple[Any, ...] = ()) -> None:
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            connection.commit()

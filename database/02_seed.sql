@@ -97,31 +97,37 @@ VALUES
 
 INSERT INTO user_account (email, password_hash, role, student_id, lecturer_id)
 VALUES
-    ('admin@unireg.test', 'demo-password-hash', 'admin', NULL, NULL),
+    (
+        'admin@unireg.test',
+        '$pbkdf2-sha256$29000$5Bwj5DxnDCGEkJJSau39Hw$YzyhAzpJyW965hRmeI4wgTuVe9QoGACOXujrfw4k84A',
+        'admin',
+        NULL,
+        NULL
+    ),
     (
         'batul.hassan@unireg.test',
-        'demo-password-hash',
+        '$pbkdf2-sha256$29000$5Bwj5DxnDCGEkJJSau39Hw$YzyhAzpJyW965hRmeI4wgTuVe9QoGACOXujrfw4k84A',
         'student',
         (SELECT student_id FROM student WHERE matric_no = 'A00025332'),
         NULL
     ),
     (
         'simtong.tongnan@unireg.test',
-        'demo-password-hash',
+        '$pbkdf2-sha256$29000$5Bwj5DxnDCGEkJJSau39Hw$YzyhAzpJyW965hRmeI4wgTuVe9QoGACOXujrfw4k84A',
         'student',
         (SELECT student_id FROM student WHERE matric_no = 'A00024575'),
         NULL
     ),
     (
         'gabriel.ayem@unireg.test',
-        'demo-password-hash',
+        '$pbkdf2-sha256$29000$5Bwj5DxnDCGEkJJSau39Hw$YzyhAzpJyW965hRmeI4wgTuVe9QoGACOXujrfw4k84A',
         'lecturer',
         NULL,
         (SELECT lecturer_id FROM lecturer WHERE staff_no = 'STF-CS-001')
     ),
     (
         'musa.danjuma@unireg.test',
-        'demo-password-hash',
+        '$pbkdf2-sha256$29000$5Bwj5DxnDCGEkJJSau39Hw$YzyhAzpJyW965hRmeI4wgTuVe9QoGACOXujrfw4k84A',
         'lecturer',
         NULL,
         (SELECT lecturer_id FROM lecturer WHERE staff_no = 'STF-CS-002')

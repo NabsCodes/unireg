@@ -4,13 +4,13 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
+import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
-import {
-  lecturerAssignedCourses,
-  lecturerProfile,
-} from "@/content/demo-data/lecturer";
+import { lecturerProfile } from "@/content/demo-data/lecturer";
 import { currentAcademicPeriod } from "@/content/portal";
+import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
+import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { LecturerCourseRow } from "@/types/academic";
 
@@ -61,12 +61,15 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 ];
 
 export function LecturerDashboardView() {
-  const assigned = lecturerAssignedCourses.length;
-  const registeredStudents = lecturerAssignedCourses.reduce(
+  const { data = [], isLoading, isError, error } = useLecturerCourses(
+    lecturerProfile.staffNo,
+  );
+  const assigned = data.length;
+  const registeredStudents = data.reduce(
     (sum, course) => sum + course.registeredStudents,
     0,
   );
-  const pendingResults = lecturerAssignedCourses.filter(
+  const pendingResults = data.filter(
     (course) => course.resultsUploaded < course.registeredStudents,
   ).length;
 
@@ -77,41 +80,52 @@ export function LecturerDashboardView() {
         description={`Welcome back, ${lecturerProfile.name}. Review assigned offerings and result upload status for ${currentAcademicPeriod.label}.`}
       />
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <StatCard
-          label="Assigned Courses"
-          value={String(assigned)}
-          helper={currentAcademicPeriod.session}
-        />
-        <StatCard
-          label="Registered Students"
-          value={String(registeredStudents)}
-          helper="Across assigned offerings"
-        />
-        <StatCard
-          label="Pending Results"
-          value={String(pendingResults)}
-          helper="Offerings awaiting upload"
-        />
-      </section>
+      <QueryState
+        error={error}
+        errorLabel="Could not load lecturer dashboard."
+        isError={isError}
+        isLoading={isLoading}
+        loadingLabel="Loading lecturer dashboard..."
+      >
+        <section className="grid gap-4 md:grid-cols-3">
+          <StatCard
+            label="Assigned Courses"
+            value={String(assigned)}
+            helper={currentAcademicPeriod.session}
+          />
+          <StatCard
+            label="Registered Students"
+            value={String(registeredStudents)}
+            helper="Across assigned offerings"
+          />
+          <StatCard
+            label="Pending Results"
+            value={String(pendingResults)}
+            helper="Offerings awaiting upload"
+          />
+        </section>
 
-      <section className="space-y-3">
-        <div>
-          <h2 className="text-base font-semibold">Assigned Courses</h2>
-          <p className="text-muted-foreground text-sm">
-            Course offerings assigned to you for the current academic period.
-          </p>
-        </div>
-        <DataTable
-          columns={columns}
-          data={lecturerAssignedCourses}
-          emptyDescription="No course offerings are assigned to your profile yet."
-          emptyTitle="No assigned courses"
-          initialPageSize={5}
-          searchKey="course"
-          searchPlaceholder="Search by course code or title..."
-        />
-      </section>
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-base font-semibold">Assigned Courses</h2>
+            <p className="text-muted-foreground text-sm">
+              Course offerings assigned to you for the current academic period.
+            </p>
+          </div>
+          <DataTable
+            columns={columns}
+            data={data}
+            emptyDescription="No course offerings are assigned to your profile yet."
+            emptyTitle="No assigned courses"
+            initialPageSize={5}
+            renderMobileCard={(row) => (
+              <LecturerCourseCard course={row.original} />
+            )}
+            searchKey="course"
+            searchPlaceholder="Search by course code or title..."
+          />
+        </section>
+      </QueryState>
     </PortalPage>
   );
 }

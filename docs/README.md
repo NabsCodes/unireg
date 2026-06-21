@@ -27,6 +27,7 @@ The docs should keep the project easy to continue across Nabeel, Batul, Claude, 
 | `implementation-log.md` | Short running log after meaningful work sessions. |
 | `requirements.md` | Project scope from the CSC 384 brief, with decisions and open questions. |
 | `architecture.md` | High-level application, roles, and module boundaries. |
+| `backend-api-contract.md` | FastAPI route contract, route counts, and frontend wiring map. |
 | `stack-decision.md` | Stack options and current recommendation based on the lecturer's suggested tools. |
 | `design-system.md` | UniReg visual tokens, shell rules, typography, and component ownership. |
 | `ui-wireframe.md` | App UI map, role portals, and screen-by-screen mental wireframe. |

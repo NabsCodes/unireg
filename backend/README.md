@@ -28,16 +28,36 @@ app/
 tests/       backend tests
 ```
 
-## Current Read Endpoints
+## Current Endpoint Groups
 
 ```text
 GET /health
-GET /api/admin/dashboard
-GET /api/academic/course-offerings
-GET /api/students/{matric_no}/results
-GET /api/students/{matric_no}/transcript
-GET /api/lecturers/{staff_no}/courses
+POST /api/auth/login
+GET /api/auth/me
+
+Admin setup:
+  /api/admin/dashboard
+  /api/admin/departments
+  /api/admin/students
+  /api/admin/lecturers
+  /api/admin/courses
+  /api/admin/sessions
+  /api/admin/semesters
+  /api/admin/offerings
+  /api/admin/grade-scale
+  /api/admin/audit-logs
+
+Student:
+  /api/students/me/course-offerings
+  /api/students/me/registrations
+  /api/students/me/results
+  /api/students/me/transcript
+
+Lecturer:
+  /api/lecturers/me/courses
+  /api/lecturers/me/result-roster
+  /api/lecturers/me/results
 ```
 
-These endpoints read from SQL views and joins. Mutations should call database
-functions such as `register_course()` and `upload_result()` once auth is added.
+See `docs/backend-api-contract.md` for the complete route count and frontend
+wiring contract.

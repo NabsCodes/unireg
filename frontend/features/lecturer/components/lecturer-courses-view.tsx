@@ -4,9 +4,12 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
+import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { lecturerAssignedCourses } from "@/content/demo-data/lecturer";
+import { lecturerProfile } from "@/content/demo-data/lecturer";
 import { currentAcademicPeriod } from "@/content/portal";
+import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
+import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { LecturerCourseRow } from "@/types/academic";
 
@@ -66,20 +69,35 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 ];
 
 export function LecturerCoursesView() {
+  const { data = [], isLoading, isError, error } = useLecturerCourses(
+    lecturerProfile.staffNo,
+  );
+
   return (
     <PortalPage>
       <PageHeader
         title="Assigned Courses"
         description={`Course offerings assigned to you for ${currentAcademicPeriod.label}.`}
       />
-      <DataTable
-        columns={columns}
-        data={lecturerAssignedCourses}
-        emptyDescription="No course offerings are assigned to your profile yet."
-        emptyTitle="No assigned courses"
-        searchKey="course"
-        searchPlaceholder="Search by course code or title..."
-      />
+      <QueryState
+        error={error}
+        errorLabel="Could not load assigned courses."
+        isError={isError}
+        isLoading={isLoading}
+        loadingLabel="Loading assigned courses..."
+      >
+        <DataTable
+          columns={columns}
+          data={data}
+          emptyDescription="No course offerings are assigned to your profile yet."
+          emptyTitle="No assigned courses"
+          renderMobileCard={(row) => (
+            <LecturerCourseCard course={row.original} />
+          )}
+          searchKey="course"
+          searchPlaceholder="Search by course code or title..."
+        />
+      </QueryState>
     </PortalPage>
   );
 }

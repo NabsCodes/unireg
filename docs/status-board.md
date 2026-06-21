@@ -39,12 +39,14 @@
 - [x] Build static lecturer result upload screen with demo data
 - [x] Build static student results and transcript screens with demo data
 - [x] Add demo seed users in SQL seed data
-- [ ] Implement FastAPI auth and role enforcement
-- [ ] Add frontend API client and TanStack Query provider
-- [ ] Wire frontend screens to backend read endpoints
-- [ ] Add backend mutation endpoints for course registration and result upload
+- [x] Implement FastAPI auth and role enforcement
+- [x] Document backend API contract and route counts
+- [x] Add frontend API client and TanStack Query provider
+- [ ] Finish token-aware frontend API wiring to FastAPI `me` endpoints
+- [x] Add backend mutation endpoints for course registration and result upload
+- [x] Add admin setup create/edit endpoints
 - [ ] Wire frontend registration/result upload mutations
-- [ ] Add mobile card views for dense student/lecturer tables
+- [x] Add mobile card views for dense student/lecturer tables
 - [ ] Run full frontend + backend demo against local PostgreSQL
 
 ## Delivery

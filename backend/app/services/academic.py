@@ -1,4 +1,4 @@
-from app.services.query import fetch_all, fetch_one
+from app.services.query import execute_one, fetch_all, fetch_one
 
 
 def get_dashboard_summary() -> dict | None:
@@ -41,6 +41,51 @@ def list_available_course_offerings() -> list[dict]:
     )
 
 
+def list_available_course_offerings_for_student(student_id: int) -> list[dict]:
+    return fetch_all(
+        """
+        SELECT
+            co.offering_id,
+            c.course_code,
+            c.course_title,
+            c.credit_units,
+            sem.semester_name,
+            acs.session_name,
+            co.max_capacity,
+            co.status,
+            count(cr_all.reg_id) FILTER (WHERE cr_all.status = 'registered')
+                AS registered_students,
+            (cr_student.reg_id IS NOT NULL AND cr_student.status = 'registered')
+                AS is_registered,
+            cr_student.status AS registration_status
+        FROM course_offering co
+        JOIN course c ON c.course_id = co.course_id
+        JOIN semester sem ON sem.semester_id = co.semester_id
+        JOIN academic_session acs ON acs.session_id = sem.session_id
+        LEFT JOIN course_registration cr_all ON cr_all.offering_id = co.offering_id
+        LEFT JOIN course_registration cr_student
+            ON cr_student.offering_id = co.offering_id
+           AND cr_student.student_id = %s
+        WHERE acs.is_current = true
+          AND co.status = 'open'
+        GROUP BY
+            co.offering_id,
+            c.course_code,
+            c.course_title,
+            c.credit_units,
+            sem.semester_name,
+            sem.start_date,
+            acs.session_name,
+            co.max_capacity,
+            co.status,
+            cr_student.reg_id,
+            cr_student.status
+        ORDER BY sem.start_date, c.course_code
+        """,
+        (student_id,),
+    )
+
+
 def list_student_results(matric_no: str) -> list[dict]:
     return fetch_all(
         """
@@ -65,6 +110,54 @@ def list_student_results(matric_no: str) -> list[dict]:
         ORDER BY session_name, semester_name, course_code
         """,
         (matric_no,),
+    )
+
+
+def list_student_results_by_id(student_id: int) -> list[dict]:
+    student = fetch_one(
+        "SELECT matric_no FROM student WHERE student_id = %s",
+        (student_id,),
+    )
+    if student is None:
+        return []
+    return list_student_results(student["matric_no"])
+
+
+def register_course_for_student(student_id: int, offering_id: int) -> dict | None:
+    row = execute_one(
+        """
+        SELECT register_course(%s, %s) AS reg_id
+        """,
+        (student_id, offering_id),
+    )
+    if row is None:
+        return None
+    return fetch_one(
+        """
+        SELECT reg_id, student_id, offering_id, status
+        FROM course_registration
+        WHERE reg_id = %s
+        """,
+        (row["reg_id"],),
+    )
+
+
+def drop_course_for_student(student_id: int, offering_id: int) -> dict | None:
+    return execute_one(
+        """
+        UPDATE course_registration cr
+        SET status = 'dropped', updated_at = now()
+        WHERE cr.student_id = %s
+          AND cr.offering_id = %s
+          AND cr.status = 'registered'
+          AND NOT EXISTS (
+              SELECT 1
+              FROM result r
+              WHERE r.reg_id = cr.reg_id
+          )
+        RETURNING reg_id, student_id, offering_id, status
+        """,
+        (student_id, offering_id),
     )
 
 
@@ -105,4 +198,103 @@ def list_lecturer_courses(staff_no: str) -> list[dict]:
         ORDER BY acs.session_name, sem.semester_name, c.course_code
         """,
         (staff_no,),
+    )
+
+
+def list_lecturer_courses_by_id(lecturer_id: int) -> list[dict]:
+    lecturer = fetch_one(
+        "SELECT staff_no FROM lecturer WHERE lecturer_id = %s",
+        (lecturer_id,),
+    )
+    if lecturer is None:
+        return []
+    return list_lecturer_courses(lecturer["staff_no"])
+
+
+def lecturer_owns_registration(lecturer_id: int, reg_id: int) -> bool:
+    row = fetch_one(
+        """
+        SELECT 1 AS allowed
+        FROM course_registration cr
+        JOIN course_assignment ca ON ca.offering_id = cr.offering_id
+        WHERE cr.reg_id = %s
+          AND ca.lecturer_id = %s
+        """,
+        (reg_id, lecturer_id),
+    )
+    return row is not None
+
+
+def lecturer_owns_offering(lecturer_id: int, offering_id: int) -> bool:
+    row = fetch_one(
+        """
+        SELECT 1 AS allowed
+        FROM course_assignment
+        WHERE lecturer_id = %s
+          AND offering_id = %s
+        """,
+        (lecturer_id, offering_id),
+    )
+    return row is not None
+
+
+def list_result_roster(lecturer_id: int, offering_id: int) -> list[dict]:
+    return fetch_all(
+        """
+        SELECT
+            cr.reg_id,
+            s.matric_no,
+            s.first_name || ' ' || s.last_name AS student_name,
+            c.course_code,
+            c.course_title,
+            r.ca_score,
+            r.exam_score,
+            r.total_score,
+            r.grade,
+            r.grade_point,
+            CASE WHEN r.result_id IS NULL THEN 'Pending' ELSE 'Uploaded' END
+                AS status
+        FROM course_registration cr
+        JOIN student s ON s.student_id = cr.student_id
+        JOIN course_offering co ON co.offering_id = cr.offering_id
+        JOIN course c ON c.course_id = co.course_id
+        JOIN course_assignment ca ON ca.offering_id = co.offering_id
+        LEFT JOIN result r ON r.reg_id = cr.reg_id
+        WHERE ca.lecturer_id = %s
+          AND co.offering_id = %s
+          AND cr.status = 'registered'
+        ORDER BY s.matric_no
+        """,
+        (lecturer_id, offering_id),
+    )
+
+
+def upload_result_for_lecturer(
+    reg_id: int,
+    ca_score,
+    exam_score,
+    user_id: int,
+) -> dict | None:
+    row = execute_one(
+        """
+        SELECT upload_result(%s, %s, %s, %s) AS result_id
+        """,
+        (reg_id, ca_score, exam_score, user_id),
+    )
+    if row is None:
+        return None
+    return fetch_one(
+        """
+        SELECT
+            result_id,
+            reg_id,
+            ca_score,
+            exam_score,
+            total_score,
+            grade,
+            grade_point
+        FROM result
+        WHERE result_id = %s
+        """,
+        (row["result_id"],),
     )

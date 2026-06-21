@@ -25,6 +25,11 @@ class AvailableCourseOffering(BaseModel):
     registered_students: int
 
 
+class StudentAvailableCourseOffering(AvailableCourseOffering):
+    is_registered: bool
+    registration_status: str | None = None
+
+
 class StudentResultRow(BaseModel):
     matric_no: str
     student_name: str
@@ -52,3 +57,44 @@ class LecturerCourseRow(BaseModel):
     session_name: str
     registered_students: int
     results_uploaded: int
+
+
+class CourseRegistrationRequest(BaseModel):
+    offering_id: int
+
+
+class CourseRegistrationResponse(BaseModel):
+    reg_id: int
+    student_id: int
+    offering_id: int
+    status: str
+
+
+class LecturerResultRosterRow(BaseModel):
+    reg_id: int
+    matric_no: str
+    student_name: str
+    course_code: str
+    course_title: str
+    ca_score: Decimal | None
+    exam_score: Decimal | None
+    total_score: Decimal | None
+    grade: str | None
+    grade_point: Decimal | None
+    status: str
+
+
+class ResultUploadRequest(BaseModel):
+    reg_id: int
+    ca_score: Decimal
+    exam_score: Decimal
+
+
+class ResultUploadResponse(BaseModel):
+    result_id: int
+    reg_id: int
+    ca_score: Decimal
+    exam_score: Decimal
+    total_score: Decimal
+    grade: str
+    grade_point: Decimal
