@@ -7,16 +7,14 @@ import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { studentProfile } from "@/content/demo-data/student";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/portal";
 import { semesterFilter } from "@/content/table-filters";
 import { useStudentResults } from "@/features/student/api/use-student-results";
 import { StudentResultCard } from "@/features/student/components/student-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
+import { usePortalUser, useStudentScope } from "@/hooks/use-portal-user";
+import { formatGradePoint, formatScore } from "@/lib/format/academic";
 import type { StudentResultRow } from "@/types/academic";
-
-function formatScore(value: number | null): string {
-  return value === null ? "—" : String(value);
-}
 
 const columns: ColumnDef<StudentResultRow>[] = [
   {
@@ -82,27 +80,26 @@ const columns: ColumnDef<StudentResultRow>[] = [
   {
     accessorKey: "gradePoint",
     header: "GPA",
-    cell: ({ row }) => {
-      const gpa = row.getValue("gradePoint") as number | null;
-      return (
-        <span className="tabular-nums">
-          {gpa === null ? "—" : gpa.toFixed(1)}
-        </span>
-      );
-    },
+    cell: ({ row }) => (
+      <span className="tabular-nums">
+        {formatGradePoint(row.getValue("gradePoint") as number | null)}
+      </span>
+    ),
   },
 ];
 
 export function StudentResultsView() {
+  const user = usePortalUser(portalUsers.student);
+  const matricNo = useStudentScope(studentProfile.matricNo);
   const { data = [], isLoading, isError, error } = useStudentResults(
-    studentProfile.matricNo,
+    matricNo,
   );
 
   return (
     <PortalPage>
       <PageHeader
         title="Results"
-        description={`Semester results for ${studentProfile.name} · ${currentAcademicPeriod.label}`}
+        description={`Semester results for ${user.name} · ${currentAcademicPeriod.label}`}
       />
       <QueryState
         error={error}

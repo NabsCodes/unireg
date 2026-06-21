@@ -8,10 +8,11 @@ import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { lecturerProfile } from "@/content/demo-data/lecturer";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/portal";
 import { useLecturerCourseResults } from "@/features/lecturer/api/use-upload-result";
 import { ResultUploadCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
+import { useLecturerScope, usePortalUser } from "@/hooks/use-portal-user";
 import type { ResultUploadRow } from "@/types/academic";
 
 const courseCode = "CSC384";
@@ -83,8 +84,10 @@ const columns: ColumnDef<ResultUploadRow>[] = [
 ];
 
 export function LecturerResultsView() {
+  const user = usePortalUser(portalUsers.lecturer);
+  const staffNo = useLecturerScope(lecturerProfile.staffNo);
   const { data = [], isLoading, isError, error } = useLecturerCourseResults(
-    lecturerProfile.staffNo,
+    staffNo,
     courseCode,
   );
 
@@ -99,7 +102,7 @@ export function LecturerResultsView() {
         <CardHeader>
           <CardTitle className="text-base">CSC384 · Database Systems</CardTitle>
           <p className="text-muted-foreground text-sm">
-            {currentAcademicPeriod.label} · Lecturer: {lecturerProfile.name} ·{" "}
+            {currentAcademicPeriod.label} · Lecturer: {user.name} ·{" "}
             {data.length} registered students
           </p>
         </CardHeader>

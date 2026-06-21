@@ -1,4 +1,4 @@
-import { apiGet } from "@/lib/api/client";
+import { apiDelete, apiGet, apiPost } from "@/lib/api/client";
 import { usesMockData } from "@/lib/api/config";
 import {
   availableOfferings,
@@ -7,11 +7,12 @@ import {
 import {
   mapAvailableOfferingRow,
   mapStudentResultRow,
-  type ApiAvailableCourseOffering,
+  type ApiStudentAvailableCourseOffering,
   type ApiStudentResultRow,
+  type DropCourseInput,
+  type RegisterCourseInput,
 } from "@/types/api";
 import type { AvailableOfferingRow, StudentResultRow } from "@/types/academic";
-import type { RegisterCourseInput } from "@/types/api";
 
 export async function getStudentResults(
   matricNo: string,
@@ -20,11 +21,13 @@ export async function getStudentResults(
     return studentResults;
   }
 
-  const rows = await apiGet<ApiStudentResultRow[]>(
-    `/api/students/${encodeURIComponent(matricNo)}/results`,
-  );
+  const path =
+    matricNo === "me"
+      ? "/api/students/me/results"
+      : `/api/students/${encodeURIComponent(matricNo)}/results`;
 
-  return rows.map(mapStudentResultRow);
+  const rows = await apiGet<ApiStudentResultRow[]>(path);
+  return rows.map((row, index) => mapStudentResultRow(row, index));
 }
 
 export async function getStudentTranscript(
@@ -34,11 +37,13 @@ export async function getStudentTranscript(
     return studentResults;
   }
 
-  const rows = await apiGet<ApiStudentResultRow[]>(
-    `/api/students/${encodeURIComponent(matricNo)}/transcript`,
-  );
+  const path =
+    matricNo === "me"
+      ? "/api/students/me/transcript"
+      : `/api/students/${encodeURIComponent(matricNo)}/transcript`;
 
-  return rows.map(mapStudentResultRow);
+  const rows = await apiGet<ApiStudentResultRow[]>(path);
+  return rows.map((row, index) => mapStudentResultRow(row, index));
 }
 
 export async function getStudentRegistrationOfferings(
@@ -48,13 +53,11 @@ export async function getStudentRegistrationOfferings(
     return availableOfferings;
   }
 
-  const offerings = await apiGet<ApiAvailableCourseOffering[]>(
-    "/api/academic/course-offerings",
+  const offerings = await apiGet<ApiStudentAvailableCourseOffering[]>(
+    "/api/students/me/course-offerings",
   );
 
-  return offerings.map((offering) =>
-    mapAvailableOfferingRow(offering, false),
-  );
+  return offerings.map((offering) => mapAvailableOfferingRow(offering));
 }
 
 export async function registerCourse(
@@ -65,7 +68,24 @@ export async function registerCourse(
     return { success: true };
   }
 
-  throw new Error(
-    `Course registration endpoint is not implemented yet for ${input.matricNo}.`,
+  await apiPost("/api/students/me/registrations", {
+    offering_id: input.offeringId,
+  });
+
+  return { success: true };
+}
+
+export async function dropCourse(
+  input: DropCourseInput,
+): Promise<{ success: true }> {
+  if (usesMockData()) {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    return { success: true };
+  }
+
+  await apiDelete(
+    `/api/students/me/registrations/${encodeURIComponent(String(input.offeringId))}`,
   );
+
+  return { success: true };
 }

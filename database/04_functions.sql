@@ -70,6 +70,8 @@ DECLARE
     v_capacity integer;
     v_offering_status varchar(20);
     v_student_status varchar(20);
+    v_existing_reg_id integer;
+    v_existing_status varchar(20);
 BEGIN
     SELECT status
     INTO v_student_status
@@ -105,6 +107,27 @@ BEGIN
 
     IF v_registered_count >= v_capacity THEN
         RAISE EXCEPTION 'Course offering % is full', p_offering_id;
+    END IF;
+
+    SELECT reg_id, status
+    INTO v_existing_reg_id, v_existing_status
+    FROM course_registration
+    WHERE student_id = p_student_id
+      AND offering_id = p_offering_id;
+
+    IF v_existing_status = 'registered' THEN
+        RAISE EXCEPTION 'Student is already registered for offering %', p_offering_id;
+    END IF;
+
+    IF v_existing_reg_id IS NOT NULL AND v_existing_status = 'dropped' THEN
+        UPDATE course_registration
+        SET status = 'registered',
+            reg_date = current_date,
+            updated_at = now()
+        WHERE reg_id = v_existing_reg_id
+        RETURNING reg_id INTO v_registration_id;
+
+        RETURN v_registration_id;
     END IF;
 
     INSERT INTO course_registration (student_id, offering_id)

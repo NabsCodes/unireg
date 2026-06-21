@@ -549,16 +549,29 @@ def list_audit_logs() -> list[dict]:
     return fetch_all(
         """
         SELECT
-            log_id,
-            user_id,
-            action,
-            table_name,
-            record_id,
-            old_values,
-            new_values,
-            created_at
-        FROM audit_log
-        ORDER BY created_at DESC, log_id DESC
+            al.log_id,
+            al.user_id,
+            al.action,
+            al.table_name,
+            al.record_id,
+            al.old_data AS old_values,
+            al.new_data AS new_values,
+            al.created_at,
+            COALESCE(
+                CASE
+                    WHEN ua.role = 'student'
+                        THEN s.first_name || ' ' || s.last_name
+                    WHEN ua.role = 'lecturer'
+                        THEN l.title || ' ' || l.first_name || ' ' || l.last_name
+                    ELSE 'Registry Administrator'
+                END,
+                'System'
+            ) AS actor_name
+        FROM audit_log al
+        LEFT JOIN user_account ua ON ua.user_id = al.user_id
+        LEFT JOIN student s ON s.student_id = ua.student_id
+        LEFT JOIN lecturer l ON l.lecturer_id = ua.lecturer_id
+        ORDER BY al.created_at DESC, al.log_id DESC
         LIMIT 100
         """
     )

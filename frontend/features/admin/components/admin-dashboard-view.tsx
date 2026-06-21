@@ -4,13 +4,24 @@ import { PageHeader } from "@/components/layout/page-header";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { adminRecentActivity } from "@/content/demo-data/admin";
 import { currentAcademicPeriod } from "@/content/portal";
 import { useAdminDashboard } from "@/features/admin/api/use-admin-dashboard";
+import { useAdminRecentActivity } from "@/features/admin/api/use-admin-recent-activity";
 import { PortalPage } from "@/features/portal/components/portal-page";
 
 export function AdminDashboardView() {
-  const { data, isLoading, isError, error } = useAdminDashboard();
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+  } = useAdminDashboard();
+  const {
+    data: activity = [],
+    isLoading: activityLoading,
+    isError: activityError,
+    error: activityQueryError,
+  } = useAdminRecentActivity();
 
   return (
     <PortalPage>
@@ -54,19 +65,39 @@ export function AdminDashboardView() {
             <Card>
               <CardHeader>
                 <CardTitle>Recent Activity</CardTitle>
+                <p className="text-muted-foreground text-sm">
+                  Latest audit events from result uploads and system changes.
+                </p>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {adminRecentActivity.map((item) => (
-                  <div
-                    className="border-border flex flex-col gap-0.5 border-b pb-3 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
-                    key={item.id}
-                  >
-                    <p className="text-foreground text-sm">{item.text}</p>
-                    <p className="text-muted-foreground shrink-0 text-xs">
-                      {item.time}
+              <CardContent>
+                <QueryState
+                  error={activityQueryError}
+                  errorLabel="Could not load recent activity."
+                  isError={activityError}
+                  isLoading={activityLoading}
+                  loadingLabel="Loading recent activity..."
+                >
+                  {activity.length === 0 ? (
+                    <p className="text-muted-foreground text-sm">
+                      No audit activity yet. Result uploads and admin changes
+                      will appear here.
                     </p>
-                  </div>
-                ))}
+                  ) : (
+                    <div className="space-y-3">
+                      {activity.map((item) => (
+                        <div
+                          className="border-border flex flex-col gap-0.5 border-b pb-3 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
+                          key={item.id}
+                        >
+                          <p className="text-foreground text-sm">{item.text}</p>
+                          <p className="text-muted-foreground shrink-0 text-xs">
+                            {item.time}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </QueryState>
               </CardContent>
             </Card>
           </>

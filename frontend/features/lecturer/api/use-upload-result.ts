@@ -14,18 +14,17 @@ export function useLecturerCourseResults(staffNo: string, courseCode: string) {
   });
 }
 
-export function useUploadResult(staffNo: string) {
+export function useUploadResult(staffNo: string, courseCode = "CSC384") {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: Omit<UploadResultInput, "staffNo">) =>
-      uploadResult({ ...input, staffNo }),
-    onSuccess: async (_data, variables) => {
+    mutationFn: (input: UploadResultInput) => uploadResult(input),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.lecturer.root(staffNo),
       });
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.lecturer.results(staffNo, variables.courseCode),
+        queryKey: queryKeys.lecturer.results(staffNo, courseCode),
       });
     },
   });

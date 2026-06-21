@@ -7,85 +7,86 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { Button } from "@/components/ui/button";
 import { studentProfile } from "@/content/demo-data/student";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/portal";
 import { semesterFilter } from "@/content/table-filters";
 import { useStudentRegistrationOfferings } from "@/features/student/api/use-student-registration";
+import { RegistrationActions } from "@/features/student/components/registration-actions";
 import { RegistrationOfferingCard } from "@/features/student/components/student-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
+import { usePortalUser, useStudentScope } from "@/hooks/use-portal-user";
 import { ALL_FILTER_VALUE } from "@/lib/data-table/column-filters";
 import type { AvailableOfferingRow } from "@/types/academic";
 
-const columns: ColumnDef<AvailableOfferingRow>[] = [
-  {
-    id: "course",
-    header: "Course",
-    accessorFn: (row) => `${row.courseCode} ${row.courseTitle}`,
-    cell: ({ row }) => (
-      <div>
-        <p className="font-medium">{row.original.courseCode}</p>
-        <p className="text-muted-foreground text-xs">
-          {row.original.courseTitle}
-        </p>
-      </div>
-    ),
-  },
-  {
-    id: "isRegistered",
-    accessorFn: (row) => String(row.isRegistered),
-    header: "Registration state",
-  },
-  {
-    accessorKey: "creditUnits",
-    header: "Credits",
-    cell: ({ row }) => (
-      <span className="tabular-nums">{row.getValue("creditUnits")}</span>
-    ),
-  },
-  {
-    accessorKey: "semester",
-    header: "Semester",
-  },
-  {
-    id: "slots",
-    header: "Slots",
-    cell: ({ row }) => (
-      <span className="tabular-nums">
-        {row.original.registered}/{row.original.capacity}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: "Offering",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as AvailableOfferingRow["status"];
-      return (
-        <StatusBadge
-          label={status === "open" ? "Open" : "Closed"}
-          tone={status === "open" ? "active" : "draft"}
-        />
-      );
-    },
-  },
-  {
-    id: "action",
-    header: "Registration",
-    cell: ({ row }) =>
-      row.original.isRegistered ? (
-        <StatusBadge label="Registered" tone="active" />
-      ) : (
-        <Button disabled size="sm" variant="outline">
-          Register
-        </Button>
-      ),
-  },
-];
-
 export function StudentRegistrationView() {
+  const user = usePortalUser(portalUsers.student);
+  const matricNo = useStudentScope(studentProfile.matricNo);
   const { data = [], isLoading, isError, error } =
-    useStudentRegistrationOfferings(studentProfile.matricNo);
+    useStudentRegistrationOfferings(matricNo);
+
+  const columns = useMemo<ColumnDef<AvailableOfferingRow>[]>(
+    () => [
+      {
+        id: "course",
+        header: "Course",
+        accessorFn: (row) => `${row.courseCode} ${row.courseTitle}`,
+        cell: ({ row }) => (
+          <div>
+            <p className="font-medium">{row.original.courseCode}</p>
+            <p className="text-muted-foreground text-xs">
+              {row.original.courseTitle}
+            </p>
+          </div>
+        ),
+      },
+      {
+        id: "isRegistered",
+        accessorFn: (row) => String(row.isRegistered),
+        header: "Registration state",
+      },
+      {
+        accessorKey: "creditUnits",
+        header: "Credits",
+        cell: ({ row }) => (
+          <span className="tabular-nums">{row.getValue("creditUnits")}</span>
+        ),
+      },
+      {
+        accessorKey: "semester",
+        header: "Semester",
+      },
+      {
+        id: "slots",
+        header: "Slots",
+        cell: ({ row }) => (
+          <span className="tabular-nums">
+            {row.original.registered}/{row.original.capacity}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "status",
+        header: "Offering",
+        cell: ({ row }) => {
+          const status = row.getValue("status") as AvailableOfferingRow["status"];
+          return (
+            <StatusBadge
+              label={status === "open" ? "Open" : "Closed"}
+              tone={status === "open" ? "active" : "draft"}
+            />
+          );
+        },
+      },
+      {
+        id: "action",
+        header: "Registration",
+        cell: ({ row }) => (
+          <RegistrationActions matricNo={matricNo} offering={row.original} />
+        ),
+      },
+    ],
+    [matricNo],
+  );
 
   const registrationTabs = useMemo(
     () => ({
@@ -116,7 +117,7 @@ export function StudentRegistrationView() {
     <PortalPage>
       <PageHeader
         title="Course Registration"
-        description={`${studentProfile.name} (${studentProfile.matricNo}) · ${currentAcademicPeriod.label}`}
+        description={`${user.name} (${user.identifier ?? matricNo}) · ${currentAcademicPeriod.label}`}
       />
       <QueryState
         error={error}
@@ -134,7 +135,10 @@ export function StudentRegistrationView() {
           filters={[semesterFilter]}
           hiddenColumnIds={["isRegistered"]}
           renderMobileCard={(row) => (
-            <RegistrationOfferingCard offering={row.original} />
+            <RegistrationOfferingCard
+              matricNo={matricNo}
+              offering={row.original}
+            />
           )}
           searchKey="course"
           searchPlaceholder="Search by course code or title..."

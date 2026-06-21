@@ -1,4 +1,4 @@
-import { apiGet } from "@/lib/api/client";
+import { apiGet, apiPost } from "@/lib/api/client";
 import { usesMockData } from "@/lib/api/config";
 import {
   csc384ResultUploads,
@@ -6,10 +6,22 @@ import {
 } from "@/content/demo-data/lecturer";
 import {
   mapLecturerCourseRow,
+  mapResultRosterRow,
   type ApiLecturerCourseRow,
+  type ApiLecturerResultRosterRow,
   type UploadResultInput,
 } from "@/types/api";
 import type { LecturerCourseRow, ResultUploadRow } from "@/types/academic";
+
+const CSC384_OFFERING_ID = 1;
+
+function resolveOfferingId(courseCode: string): number {
+  if (courseCode === "CSC384") {
+    return CSC384_OFFERING_ID;
+  }
+
+  return CSC384_OFFERING_ID;
+}
 
 export async function getLecturerCourses(
   staffNo: string,
@@ -18,15 +30,17 @@ export async function getLecturerCourses(
     return lecturerAssignedCourses;
   }
 
-  const rows = await apiGet<ApiLecturerCourseRow[]>(
-    `/api/lecturers/${encodeURIComponent(staffNo)}/courses`,
-  );
+  const path =
+    staffNo === "me"
+      ? "/api/lecturers/me/courses"
+      : `/api/lecturers/${encodeURIComponent(staffNo)}/courses`;
 
-  return rows.map(mapLecturerCourseRow);
+  const rows = await apiGet<ApiLecturerCourseRow[]>(path);
+  return rows.map((row, index) => mapLecturerCourseRow(row, index));
 }
 
 export async function getLecturerCourseResults(
-  staffNo: string,
+  _staffNo: string,
   courseCode: string,
 ): Promise<ResultUploadRow[]> {
   if (usesMockData()) {
@@ -37,9 +51,12 @@ export async function getLecturerCourseResults(
     return [];
   }
 
-  throw new Error(
-    `Result upload listing is not implemented yet for ${staffNo} / ${courseCode}.`,
+  const offeringId = resolveOfferingId(courseCode);
+  const rows = await apiGet<ApiLecturerResultRosterRow[]>(
+    `/api/lecturers/me/result-roster?offering_id=${offeringId}`,
   );
+
+  return rows.map((row, index) => mapResultRosterRow(row, index));
 }
 
 export async function uploadResult(
@@ -50,7 +67,11 @@ export async function uploadResult(
     return { success: true };
   }
 
-  throw new Error(
-    `Result upload endpoint is not implemented yet for ${input.courseCode}.`,
-  );
+  await apiPost("/api/lecturers/me/results", {
+    reg_id: input.regId,
+    ca_score: input.caScore,
+    exam_score: input.examScore,
+  });
+
+  return { success: true };
 }

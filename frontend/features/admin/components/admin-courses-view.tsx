@@ -4,8 +4,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
-import { courses } from "@/content/demo-data/admin";
+import { QueryState } from "@/components/shared/query-state";
 import { departmentFilter } from "@/content/table-filters";
+import { useAdminCourses } from "@/features/admin/api/use-admin-lists";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { CourseRow } from "@/types/academic";
 
@@ -39,21 +40,31 @@ const columns: ColumnDef<CourseRow>[] = [
 ];
 
 export function AdminCoursesView() {
+  const { data = [], isLoading, isError, error } = useAdminCourses();
+
   return (
     <PortalPage>
       <PageHeader
         title="Courses"
         description="Maintain course catalogue entries, credit units, and department ownership."
       />
-      <DataTable
-        columns={columns}
-        data={courses}
-        emptyDescription="Course catalogue entries will appear here once they are defined."
-        emptyTitle="No courses"
-        filters={[departmentFilter]}
-        searchKey="code"
-        searchPlaceholder="Search by course code or title..."
-      />
+      <QueryState
+        error={error}
+        errorLabel="Could not load courses."
+        isError={isError}
+        isLoading={isLoading}
+        loadingLabel="Loading courses..."
+      >
+        <DataTable
+          columns={columns}
+          data={data}
+          emptyDescription="Course catalogue entries will appear here once they are defined."
+          emptyTitle="No courses"
+          filters={[departmentFilter]}
+          searchKey="code"
+          searchPlaceholder="Search by course code or title..."
+        />
+      </QueryState>
     </PortalPage>
   );
 }

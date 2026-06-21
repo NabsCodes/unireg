@@ -22,6 +22,8 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+build/
+*.egg-info/
 
 # Database / local artifacts
 *.sqlite

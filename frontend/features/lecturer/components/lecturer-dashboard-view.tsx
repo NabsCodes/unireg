@@ -8,10 +8,11 @@ import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { lecturerProfile } from "@/content/demo-data/lecturer";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/portal";
 import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
 import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
+import { useLecturerScope, usePortalUser } from "@/hooks/use-portal-user";
 import type { LecturerCourseRow } from "@/types/academic";
 
 const columns: ColumnDef<LecturerCourseRow>[] = [
@@ -61,8 +62,10 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 ];
 
 export function LecturerDashboardView() {
+  const user = usePortalUser(portalUsers.lecturer);
+  const staffNo = useLecturerScope(lecturerProfile.staffNo);
   const { data = [], isLoading, isError, error } = useLecturerCourses(
-    lecturerProfile.staffNo,
+    staffNo,
   );
   const assigned = data.length;
   const registeredStudents = data.reduce(
@@ -77,7 +80,7 @@ export function LecturerDashboardView() {
     <PortalPage>
       <PageHeader
         title="Lecturer Dashboard"
-        description={`Welcome back, ${lecturerProfile.name}. Review assigned offerings and result upload status for ${currentAcademicPeriod.label}.`}
+        description={`Welcome back, ${user.name}. Review assigned offerings and result upload status for ${currentAcademicPeriod.label}.`}
       />
 
       <QueryState

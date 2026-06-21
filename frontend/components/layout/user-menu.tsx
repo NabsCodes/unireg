@@ -10,8 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { PortalUser } from "@/content/portal";
+import { clearAuth } from "@/lib/auth/session";
 import { LogOut } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 function initials(name: string): string {
   return name
@@ -26,6 +27,13 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const router = useRouter();
+
+  function handleSignOut() {
+    clearAuth();
+    router.push("/login");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,11 +69,9 @@ export function UserMenu({ user }: UserMenuProps) {
           ) : null}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/login">
-            <LogOut className="size-4" />
-            Sign out
-          </Link>
+        <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="size-4" />
+          Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

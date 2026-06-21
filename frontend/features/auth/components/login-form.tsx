@@ -25,7 +25,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { login } from "@/lib/api/auth";
+import { usesMockData } from "@/lib/api/config";
+import { roleToDashboardRoute } from "@/lib/auth/portal-user";
 import { resolveLoginRoute } from "@/lib/auth/login-routing";
+import { setAuth } from "@/lib/auth/session";
 import {
   loginFormDefaultValues,
   loginFormSchema,
@@ -72,15 +76,30 @@ export function LoginForm() {
   async function onSubmit(values: LoginFormValues) {
     setFormError(null);
 
-    const route = resolveLoginRoute(values.identifier);
-    if (!route) {
-      setFormError(
-        "We could not match that identifier. Use a registered email, matric number, or staff number.",
-      );
+    if (usesMockData()) {
+      const route = resolveLoginRoute(values.identifier);
+      if (!route) {
+        setFormError(
+          "We could not match that identifier. Use a registered email, matric number, or staff number.",
+        );
+        return;
+      }
+
+      router.push(route);
       return;
     }
 
-    router.push(route);
+    try {
+      const response = await login(values.identifier, values.password);
+      setAuth(response.access_token, response.user);
+      router.push(roleToDashboardRoute(response.user.role));
+    } catch (error) {
+      setFormError(
+        error instanceof Error
+          ? error.message
+          : "Sign in failed. Check your credentials and try again.",
+      );
+    }
   }
 
   function fillSampleAccount(identifier: string) {

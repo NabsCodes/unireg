@@ -4,8 +4,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
-import { auditLogs } from "@/content/demo-data/admin";
+import { QueryState } from "@/components/shared/query-state";
 import { auditActionFilter } from "@/content/table-filters";
+import { useAdminAuditLogs } from "@/features/admin/api/use-admin-lists";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { AuditLogRow } from "@/types/academic";
 
@@ -46,21 +47,31 @@ const columns: ColumnDef<AuditLogRow>[] = [
 ];
 
 export function AdminAuditLogsView() {
+  const { data = [], isLoading, isError, error } = useAdminAuditLogs();
+
   return (
     <PortalPage>
       <PageHeader
         title="Audit Logs"
         description="Review audit entries for result changes, registration actions, and admin updates."
       />
-      <DataTable
-        columns={columns}
-        data={auditLogs}
-        emptyDescription="Audit entries will appear here as users perform registration and result actions."
-        emptyTitle="No audit entries"
-        filters={[auditActionFilter]}
-        searchKey="actor"
-        searchPlaceholder="Search by actor or action..."
-      />
+      <QueryState
+        error={error}
+        errorLabel="Could not load audit logs."
+        isError={isError}
+        isLoading={isLoading}
+        loadingLabel="Loading audit logs..."
+      >
+        <DataTable
+          columns={columns}
+          data={data}
+          emptyDescription="Audit entries will appear here as users perform registration and result actions."
+          emptyTitle="No audit entries"
+          filters={[auditActionFilter]}
+          searchKey="actor"
+          searchPlaceholder="Search by actor or action..."
+        />
+      </QueryState>
     </PortalPage>
   );
 }

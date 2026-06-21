@@ -81,6 +81,7 @@ export type LecturerCourseRow = {
 
 export type ResultUploadRow = {
   id: string;
+  regId: number;
   matricNo: string;
   studentName: string;
   caScore: number | null;
@@ -88,6 +89,15 @@ export type ResultUploadRow = {
   totalScore: number | null;
   grade: string | null;
   status: "Uploaded" | "Pending";
+};
+
+export type GradeScaleRow = {
+  id: string;
+  grade: string;
+  minScore: number;
+  maxScore: number;
+  gradePoint: number;
+  remark: string;
 };
 
 export type AvailableOfferingRow = {

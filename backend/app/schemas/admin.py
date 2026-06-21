@@ -177,6 +177,7 @@ class AuditLogRow(BaseModel):
     old_values: dict | None
     new_values: dict | None
     created_at: datetime
+    actor_name: str | None = None
 
 
 class GradeScaleRow(BaseModel):

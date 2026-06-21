@@ -11,6 +11,7 @@ import { currentAcademicPeriod } from "@/content/portal";
 import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
 import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
+import { useLecturerScope } from "@/hooks/use-portal-user";
 import type { LecturerCourseRow } from "@/types/academic";
 
 const columns: ColumnDef<LecturerCourseRow>[] = [
@@ -69,8 +70,9 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 ];
 
 export function LecturerCoursesView() {
+  const staffNo = useLecturerScope(lecturerProfile.staffNo);
   const { data = [], isLoading, isError, error } = useLecturerCourses(
-    lecturerProfile.staffNo,
+    staffNo,
   );
 
   return (

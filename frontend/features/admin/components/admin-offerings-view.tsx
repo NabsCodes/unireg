@@ -4,9 +4,10 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
+import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { courseOfferings } from "@/content/demo-data/admin";
 import { OfferingCard } from "@/features/admin/components/admin-list-cards";
+import { useAdminOfferings } from "@/features/admin/api/use-admin-lists";
 import {
   offeringStatusFilter,
   semesterFilter,
@@ -65,22 +66,32 @@ const columns: ColumnDef<OfferingRow>[] = [
 ];
 
 export function AdminOfferingsView() {
+  const { data = [], isLoading, isError, error } = useAdminOfferings();
+
   return (
     <PortalPage>
       <PageHeader
         title="Course Offerings"
         description="Configure course offerings per session and semester, including capacity and lecturer assignment."
       />
-      <DataTable
-        columns={columns}
-        data={courseOfferings}
-        emptyDescription="Course offerings will appear here once they are published for a session."
-        emptyTitle="No offerings"
-        filters={[semesterFilter, offeringStatusFilter]}
-        renderMobileCard={(row) => <OfferingCard offering={row.original} />}
-        searchKey="course"
-        searchPlaceholder="Search by course code or title..."
-      />
+      <QueryState
+        error={error}
+        errorLabel="Could not load course offerings."
+        isError={isError}
+        isLoading={isLoading}
+        loadingLabel="Loading course offerings..."
+      >
+        <DataTable
+          columns={columns}
+          data={data}
+          emptyDescription="Course offerings will appear here once they are published for a session."
+          emptyTitle="No offerings"
+          filters={[semesterFilter, offeringStatusFilter]}
+          renderMobileCard={(row) => <OfferingCard offering={row.original} />}
+          searchKey="course"
+          searchPlaceholder="Search by course code or title..."
+        />
+      </QueryState>
     </PortalPage>
   );
 }

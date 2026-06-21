@@ -2,6 +2,14 @@ export const queryKeys = {
   admin: {
     all: ["admin"] as const,
     dashboard: () => [...queryKeys.admin.all, "dashboard"] as const,
+    departments: () => [...queryKeys.admin.all, "departments"] as const,
+    students: () => [...queryKeys.admin.all, "students"] as const,
+    lecturers: () => [...queryKeys.admin.all, "lecturers"] as const,
+    courses: () => [...queryKeys.admin.all, "courses"] as const,
+    offerings: () => [...queryKeys.admin.all, "offerings"] as const,
+    auditLogs: () => [...queryKeys.admin.all, "audit-logs"] as const,
+    recentActivity: () => [...queryKeys.admin.all, "recent-activity"] as const,
+    gradeScale: () => [...queryKeys.admin.all, "grade-scale"] as const,
   },
   academic: {
     all: ["academic"] as const,

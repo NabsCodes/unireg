@@ -4,6 +4,8 @@ const loginRoutes: Record<string, Route> = {
   "admin@unireg.test": "/admin/dashboard",
   "gabriel.ayem@unireg.test": "/lecturer/dashboard",
   "batul.hassan@unireg.test": "/student/dashboard",
+  "stf-cs-001": "/lecturer/dashboard",
+  "STF-CS-001": "/lecturer/dashboard",
   A00025332: "/student/dashboard",
 };
 

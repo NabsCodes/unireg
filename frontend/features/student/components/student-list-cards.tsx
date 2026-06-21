@@ -1,15 +1,11 @@
+"use client";
+
 import type { ReactNode } from "react";
 
-import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/shared/status-badge";
-import type {
-  AvailableOfferingRow,
-  StudentResultRow,
-} from "@/types/academic";
-
-function formatScore(value: number | null): string {
-  return value === null ? "—" : String(value);
-}
+import { RegistrationActions } from "@/features/student/components/registration-actions";
+import { formatGradePoint, formatScore } from "@/lib/format/academic";
+import type { AvailableOfferingRow, StudentResultRow } from "@/types/academic";
 
 type DetailProps = {
   label: string;
@@ -27,8 +23,10 @@ function Detail({ label, value }: DetailProps) {
 
 export function RegistrationOfferingCard({
   offering,
+  matricNo,
 }: {
   offering: AvailableOfferingRow;
+  matricNo: string;
 }) {
   return (
     <article className="space-y-3">
@@ -37,13 +35,11 @@ export function RegistrationOfferingCard({
           <p className="font-medium">{offering.courseCode}</p>
           <p className="text-muted-foreground text-sm">{offering.courseTitle}</p>
         </div>
-        {offering.isRegistered ? (
-          <StatusBadge label="Registered" tone="active" />
-        ) : (
-          <Button disabled size="sm" variant="outline">
-            Register
-          </Button>
-        )}
+        <RegistrationActions
+          layout="card"
+          matricNo={matricNo}
+          offering={offering}
+        />
       </div>
       <dl className="grid grid-cols-2 gap-3">
         <Detail label="Credits" value={offering.creditUnits} />
@@ -99,9 +95,7 @@ export function StudentResultCard({ result }: { result: StudentResultRow }) {
         />
         <Detail
           label="GPA"
-          value={
-            result.gradePoint === null ? "—" : result.gradePoint.toFixed(1)
-          }
+          value={formatGradePoint(result.gradePoint)}
         />
       </dl>
     </article>
@@ -127,9 +121,7 @@ export function TranscriptRecordCard({ result }: { result: StudentResultRow }) {
         <Detail label="Grade" value={result.grade ?? "—"} />
         <Detail
           label="GPA"
-          value={
-            result.gradePoint === null ? "—" : result.gradePoint.toFixed(1)
-          }
+          value={formatGradePoint(result.gradePoint)}
         />
       </dl>
     </article>

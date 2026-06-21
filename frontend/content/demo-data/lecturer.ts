@@ -22,6 +22,7 @@ export const lecturerAssignedCourses: LecturerCourseRow[] = [
 export const csc384ResultUploads: ResultUploadRow[] = [
   {
     id: "1",
+    regId: 1,
     matricNo: "A00025332",
     studentName: "Batul Hassan",
     caScore: 36,
@@ -32,6 +33,7 @@ export const csc384ResultUploads: ResultUploadRow[] = [
   },
   {
     id: "2",
+    regId: 2,
     matricNo: "A00024575",
     studentName: "Simtong Tongnan",
     caScore: 34,
