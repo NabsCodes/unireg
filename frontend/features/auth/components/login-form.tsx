@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Eye,
   EyeOff,
@@ -64,6 +65,7 @@ const sampleAccounts: Array<{
 
 export function LoginForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [formError, setFormError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -85,12 +87,14 @@ export function LoginForm() {
         return;
       }
 
+      queryClient.clear();
       router.push(route);
       return;
     }
 
     try {
       const response = await login(values.identifier, values.password);
+      queryClient.clear();
       setAuth(response.access_token, response.user);
       router.push(roleToDashboardRoute(response.user.role));
     } catch (error) {
@@ -112,7 +116,7 @@ export function LoginForm() {
 
   return (
     <div className="flex min-h-screen w-full min-w-0 flex-col justify-center overflow-x-hidden px-4 py-8 sm:px-8 lg:px-10 xl:px-12">
-      <div className="mx-auto w-full min-w-0 max-w-full sm:max-w-[440px]">
+      <div className="mx-auto w-full max-w-full min-w-0 sm:max-w-[440px]">
         <div className="mb-7 lg:hidden">
           <div className="bg-primary text-primary-foreground mb-4 flex size-11 items-center justify-center rounded-lg">
             <GraduationCap className="size-6" />

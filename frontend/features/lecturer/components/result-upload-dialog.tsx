@@ -97,7 +97,9 @@ export function ResultUploadDialog({
         onOpenChange={onOpenChange}
         onSubmit={onSubmit}
         open={open}
-        submitLabel={row.status === "Uploaded" ? "Update scores" : "Upload scores"}
+        submitLabel={
+          row.status === "Uploaded" ? "Update scores" : "Upload scores"
+        }
         title={row.status === "Uploaded" ? "Edit result" : "Upload result"}
       >
         <ScoreFormField

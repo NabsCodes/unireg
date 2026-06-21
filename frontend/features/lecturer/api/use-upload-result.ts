@@ -2,10 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import {
-  getLecturerOfferingResults,
-  uploadResult,
-} from "@/lib/api/lecturer";
+import { getLecturerOfferingResults, uploadResult } from "@/lib/api/lecturer";
 import { queryKeys } from "@/lib/api/query-keys";
 import type { UploadResultInput } from "@/types/api";
 

@@ -24,7 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { currentAcademicPeriod, type PortalUser } from "@/content/portal";
+import { currentAcademicPeriod, type PortalUser } from "@/content/data/portal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -92,7 +92,9 @@ export function SidebarProfile({ user, collapsed }: SidebarProfileProps) {
       {!collapsed ? (
         <>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium">{user.name}</span>
+            <span className="block truncate text-sm font-medium">
+              {user.name}
+            </span>
             <span className="block truncate text-xs text-white/65">
               View profile
             </span>
@@ -108,7 +110,10 @@ export function SidebarProfile({ user, collapsed }: SidebarProfileProps) {
       {collapsed ? (
         <Tooltip>
           <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-          <TooltipContent side="right" className="bg-foreground text-background">
+          <TooltipContent
+            side="right"
+            className="bg-foreground text-background"
+          >
             My profile
           </TooltipContent>
         </Tooltip>
@@ -143,7 +148,9 @@ export function SidebarProfile({ user, collapsed }: SidebarProfileProps) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1 pt-1">
-                    <p className="truncate text-lg font-semibold">{user.name}</p>
+                    <p className="truncate text-lg font-semibold">
+                      {user.name}
+                    </p>
                     <p className="text-muted-foreground mt-0.5 text-sm">
                       {user.email}
                     </p>
@@ -167,7 +174,11 @@ export function SidebarProfile({ user, collapsed }: SidebarProfileProps) {
                 <p className="text-muted-foreground mb-3 text-xs font-medium tracking-wide uppercase">
                   Account details
                 </p>
-                <ProfileField icon={Mail} label="Email address" value={user.email} />
+                <ProfileField
+                  icon={Mail}
+                  label="Email address"
+                  value={user.email}
+                />
                 {user.identifier ? (
                   <ProfileField
                     icon={Shield}

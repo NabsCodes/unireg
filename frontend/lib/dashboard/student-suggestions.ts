@@ -1,17 +1,10 @@
-import {
-  BookOpen,
-  ClipboardList,
-  ScrollText,
-} from "lucide-react";
+import { BookOpen, ClipboardList, ScrollText } from "lucide-react";
 
 import type { DashboardSuggestion } from "@/components/shared/dashboard-suggestions";
 import { formatGradePoint } from "@/lib/format/academic";
 import type { StudentDashboardSummary } from "@/types/academic";
 
-function academicPeriodLabel(
-  session: string,
-  semester: string | null,
-): string {
+function academicPeriodLabel(session: string, semester: string | null): string {
   return semester ? `${session} · ${semester}` : session;
 }
 

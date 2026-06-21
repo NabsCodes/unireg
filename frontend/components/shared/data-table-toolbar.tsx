@@ -52,7 +52,8 @@ function FilterSelects<TData>({
         if (!column) return null;
 
         const allValue = filter.allValue ?? ALL_FILTER_VALUE;
-        const currentValue = (column.getFilterValue() as string | undefined) ?? allValue;
+        const currentValue =
+          (column.getFilterValue() as string | undefined) ?? allValue;
 
         return (
           <div
@@ -138,13 +139,21 @@ export function DataTableToolbar<TData>({
           {filters.length > 0 ? (
             <>
               <div className="hidden flex-wrap items-center gap-2 md:flex">
-                <FilterSelects filters={filters} layout="inline" table={table} />
+                <FilterSelects
+                  filters={filters}
+                  layout="inline"
+                  table={table}
+                />
               </div>
 
               <div className="md:hidden">
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button className="w-full gap-2" type="button" variant="outline">
+                    <Button
+                      className="w-full gap-2"
+                      type="button"
+                      variant="outline"
+                    >
                       <SlidersHorizontal className="size-4" />
                       Filters
                       {refineCount > 0 ? (
@@ -154,7 +163,10 @@ export function DataTableToolbar<TData>({
                       ) : null}
                     </Button>
                   </SheetTrigger>
-                  <SheetContent className="flex flex-col gap-0 p-0" side="bottom">
+                  <SheetContent
+                    className="flex flex-col gap-0 p-0"
+                    side="bottom"
+                  >
                     <SheetHeader className="border-border border-b p-4 text-left">
                       <SheetTitle>Filters</SheetTitle>
                       <SheetDescription>
@@ -162,7 +174,11 @@ export function DataTableToolbar<TData>({
                       </SheetDescription>
                     </SheetHeader>
                     <div className="flex flex-col gap-4 overflow-y-auto p-4">
-                      <FilterSelects filters={filters} layout="sheet" table={table} />
+                      <FilterSelects
+                        filters={filters}
+                        layout="sheet"
+                        table={table}
+                      />
                     </div>
                     {hasActiveFilters ? (
                       <SheetFooter className="border-border border-t p-4">

@@ -14,20 +14,12 @@ import { PortalPage } from "@/features/portal/components/portal-page";
 import { buildStudentDashboardSuggestions } from "@/lib/dashboard/student-suggestions";
 import { formatGradePoint } from "@/lib/format/academic";
 
-function academicPeriodLabel(
-  session: string,
-  semester: string | null,
-): string {
+function academicPeriodLabel(session: string, semester: string | null): string {
   return semester ? `${session} · ${semester}` : session;
 }
 
 export function StudentDashboardView() {
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useStudentDashboard();
+  const { data, isLoading, isError, error } = useStudentDashboard();
 
   return (
     <PortalPage>

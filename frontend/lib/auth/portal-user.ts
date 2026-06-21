@@ -1,6 +1,6 @@
 import type { Route } from "next";
 
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import type { StoredAuthUser } from "@/lib/auth/session";
 
 const roleLabels: Record<string, string> = {

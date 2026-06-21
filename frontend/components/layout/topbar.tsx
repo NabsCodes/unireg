@@ -1,7 +1,7 @@
 "use client";
 
-import type { PortalUser } from "@/content/portal";
-import { currentAcademicPeriod } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
+import { currentAcademicPeriod } from "@/content/data/portal";
 import { useCurrentAcademicPeriod } from "@/features/academic/api/use-current-academic-period";
 import { SidebarTrigger } from "./sidebar/trigger";
 import { UserMenu } from "./user-menu";

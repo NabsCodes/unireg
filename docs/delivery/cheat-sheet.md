@@ -101,4 +101,4 @@ Lecturer saves CA + exam
 
 - Grade scale admin screen (`/admin/grade-scale`) — built as read-only; optional to demo (data also lives in `grade_scale` table)
 - Every line of frontend code
-- Mock/demo-data mode (presentation uses live PostgreSQL)
+- Mock data mode (presentation uses live PostgreSQL)

@@ -5,7 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
-import { auditActionFilter } from "@/content/table-filters";
+import { auditActionFilter } from "@/content/data/table-filters";
 import { useAdminAuditLogs } from "@/features/admin/api/use-admin-lists";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { AuditLogRow } from "@/types/academic";
@@ -15,7 +15,7 @@ const columns: ColumnDef<AuditLogRow>[] = [
     accessorKey: "timestamp",
     header: "Timestamp",
     cell: ({ row }) => (
-      <span className="text-muted-foreground whitespace-nowrap text-xs">
+      <span className="text-muted-foreground text-xs whitespace-nowrap">
         {row.getValue("timestamp")}
       </span>
     ),

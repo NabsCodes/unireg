@@ -1,4 +1,4 @@
-import { pageSeo } from "@/content/seo";
+import { pageSeo } from "@/content/data/seo";
 import { LecturerDashboardView } from "@/features/lecturer/components/lecturer-dashboard-view";
 import { createPortalMetadata } from "@/lib/metadata";
 

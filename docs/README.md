@@ -51,6 +51,6 @@ If these disagree, update the docs before writing code.
 ## Runtime Data Source
 
 - **Primary:** PostgreSQL → FastAPI → Next.js (`NEXT_PUBLIC_DATA_SOURCE=api`)
-- **Fallback:** `frontend/content/demo-data/` when mock mode is enabled (offline UI only)
+- **Fallback:** `frontend/content/mock/` when mock mode is enabled (offline UI only)
 
 See root `README.md` for env setup and demo credentials.

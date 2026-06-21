@@ -151,4 +151,4 @@ With `NEXT_PUBLIC_DATA_SOURCE=api`, these screens read **live PostgreSQL data** 
 | Lecturer courses + result upload | Yes | Offering selector + CA/exam upload |
 | Student dashboard | Yes | Live summary via `GET /api/students/me/dashboard` |
 
-Mock mode (`DATA_SOURCE` not `api`) still serves `content/demo-data/` through the same `lib/api/` functions for offline UI work.
+Mock mode (`NEXT_PUBLIC_DATA_SOURCE` not `api`) still serves `content/mock/` through the same `lib/api/` functions for offline UI work.

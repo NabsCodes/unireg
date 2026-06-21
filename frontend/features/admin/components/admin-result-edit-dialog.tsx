@@ -73,9 +73,7 @@ export function AdminResultEditDialog({
         tone: "error",
         title: "Could not save scores",
         description:
-          error instanceof ApiError
-            ? error.message
-            : "Please try again.",
+          error instanceof ApiError ? error.message : "Please try again.",
       });
     }
   }

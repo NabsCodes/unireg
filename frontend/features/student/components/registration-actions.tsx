@@ -12,9 +12,7 @@ import {
 } from "@/features/student/api/use-student-registration";
 import { RegistrationStatusBadge } from "@/features/student/components/registration-status-badge";
 import { ApiError } from "@/lib/api/client";
-import {
-  getRegistrationDisplayState,
-} from "@/lib/academic/registration-state";
+import { getRegistrationDisplayState } from "@/lib/academic/registration-state";
 import type { AvailableOfferingRow } from "@/types/academic";
 
 type PendingAction = "register" | "drop" | null;

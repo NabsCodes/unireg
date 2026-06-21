@@ -18,7 +18,9 @@ export function OfferingCard({ offering }: { offering: OfferingRow }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-medium">{offering.courseCode}</p>
-          <p className="text-muted-foreground text-sm">{offering.courseTitle}</p>
+          <p className="text-muted-foreground text-sm">
+            {offering.courseTitle}
+          </p>
         </div>
         <StatusBadge
           label={offering.status === "open" ? "Open" : "Closed"}

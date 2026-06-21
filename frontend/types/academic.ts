@@ -85,6 +85,9 @@ export type AuditLogRow = {
 
 export type StudentResultRow = {
   id: string;
+  matricNo?: string;
+  studentName?: string;
+  department?: string;
   session: string;
   semester: string;
   courseCode: string;
@@ -95,6 +98,8 @@ export type StudentResultRow = {
   totalScore: number | null;
   grade: string | null;
   gradePoint: number | null;
+  semesterGpa?: number | null;
+  cgpa?: number | null;
 };
 
 export type LecturerCourseRow = {

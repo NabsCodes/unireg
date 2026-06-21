@@ -79,4 +79,4 @@ FastAPI (/api/*, JWT auth)
 Next.js (lib/api → TanStack Query → portal views)
 ```
 
-Set `NEXT_PUBLIC_DATA_SOURCE=api` in `frontend/.env.local` for demo and daily development. Mock rows in `frontend/content/demo-data/` are used only when the API is not selected.
+Set `NEXT_PUBLIC_DATA_SOURCE=api` in `frontend/.env.local` for demo and daily development. Mock rows in `frontend/content/mock/` are used only when the API is not selected.

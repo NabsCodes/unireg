@@ -88,16 +88,15 @@ export function QueryState<TData>(props: QueryStateProps<TData>) {
 
     if (query.isError) {
       return (
-        <QueryStateError error={query.error ?? undefined} errorLabel={errorLabel} />
+        <QueryStateError
+          error={query.error ?? undefined}
+          errorLabel={errorLabel}
+        />
       );
     }
 
     if (query.isLoading || query.data === undefined) {
-      return (
-        <>
-          {resolveSkeletonNode(variant, skeleton, rows, statCount)}
-        </>
-      );
+      return <>{resolveSkeletonNode(variant, skeleton, rows, statCount)}</>;
     }
 
     if (empty && isEmpty?.(query.data)) {

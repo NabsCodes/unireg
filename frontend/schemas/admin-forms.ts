@@ -18,7 +18,9 @@ export const studentFormSchema = z.object({
   status: z.enum(["active", "graduated", "suspended"]),
 });
 
-export const studentEditFormSchema = studentFormSchema.omit({ matric_no: true });
+export const studentEditFormSchema = studentFormSchema.omit({
+  matric_no: true,
+});
 
 export const lecturerFormSchema = z.object({
   staff_no: requiredTrimmedText(3, "Staff number is required"),
@@ -29,7 +31,9 @@ export const lecturerFormSchema = z.object({
   dept_id: requiredTrimmedText(1, "Department is required"),
 });
 
-export const lecturerEditFormSchema = lecturerFormSchema.omit({ staff_no: true });
+export const lecturerEditFormSchema = lecturerFormSchema.omit({
+  staff_no: true,
+});
 
 export const courseFormSchema = z.object({
   course_code: requiredTrimmedText(3, "Course code is required"),
@@ -39,7 +43,9 @@ export const courseFormSchema = z.object({
   dept_id: requiredTrimmedText(1, "Department is required"),
 });
 
-export const courseEditFormSchema = courseFormSchema.omit({ course_code: true });
+export const courseEditFormSchema = courseFormSchema.omit({
+  course_code: true,
+});
 
 export const offeringFormSchema = z.object({
   course_id: requiredTrimmedText(1, "Course is required"),

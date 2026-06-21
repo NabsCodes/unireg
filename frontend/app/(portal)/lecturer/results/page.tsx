@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { pageSeo } from "@/content/seo";
+import { pageSeo } from "@/content/data/seo";
 import { LecturerResultsView } from "@/features/lecturer/components/lecturer-results-view";
 import { createPortalMetadata } from "@/lib/metadata";
 

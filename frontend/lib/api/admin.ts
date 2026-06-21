@@ -37,9 +37,7 @@ import type {
   SessionRow,
   StudentRow,
 } from "@/types/academic";
-import {
-  csc384ResultUploads,
-} from "@/content/demo-data/lecturer";
+import { csc384ResultUploads } from "@/content/mock/lecturer";
 import {
   mapResultRosterRow,
   type ApiLecturerResultRosterRow,
@@ -57,7 +55,7 @@ import {
   semesters,
   sessions,
   students,
-} from "@/content/demo-data/admin";
+} from "@/content/mock/admin";
 
 export async function getAdminDashboardSummary(): Promise<DashboardSummary> {
   if (usesMockData()) {
@@ -130,7 +128,9 @@ export async function getAdminAuditLogs(): Promise<AuditLogRow[]> {
   return rows.map((row, index) => mapAuditLogRow(row, index));
 }
 
-export async function getAdminRecentActivity(): Promise<DashboardActivityItem[]> {
+export async function getAdminRecentActivity(): Promise<
+  DashboardActivityItem[]
+> {
   if (usesMockData()) {
     return adminRecentActivity.map((item) => ({
       id: item.id,
@@ -140,7 +140,9 @@ export async function getAdminRecentActivity(): Promise<DashboardActivityItem[]>
   }
 
   const rows = await apiGet<ApiAuditLogRow[]>("/api/admin/audit-logs");
-  return rows.slice(0, 6).map((row, index) => mapDashboardActivityItem(row, index));
+  return rows
+    .slice(0, 6)
+    .map((row, index) => mapDashboardActivityItem(row, index));
 }
 
 export async function getAdminGradeScale(): Promise<GradeScaleRow[]> {

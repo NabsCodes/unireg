@@ -1,4 +1,4 @@
-import { pageSeo } from "@/content/seo";
+import { pageSeo } from "@/content/data/seo";
 import { StudentResultsView } from "@/features/student/components/student-results-view";
 import { createPortalMetadata } from "@/lib/metadata";
 

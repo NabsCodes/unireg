@@ -242,4 +242,3 @@ export function openTranscriptPdfExport(
 ) {
   printTranscriptDocument(rows, meta);
 }
-

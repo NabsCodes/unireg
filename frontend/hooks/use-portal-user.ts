@@ -1,6 +1,6 @@
 "use client";
 
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import { usesMockData } from "@/lib/api/config";
 import { authUserToPortalUser } from "@/lib/auth/portal-user";
 import { getCurrentUser } from "@/lib/auth/session";

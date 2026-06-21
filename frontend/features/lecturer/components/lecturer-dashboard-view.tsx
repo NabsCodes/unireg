@@ -8,8 +8,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { lecturerProfile } from "@/content/demo-data/lecturer";
-import { currentAcademicPeriod, portalUsers } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
 import { useCurrentAcademicPeriod } from "@/features/academic/api/use-current-academic-period";
 import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
 import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
@@ -66,12 +65,12 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 
 export function LecturerDashboardView() {
   const user = usePortalUser(portalUsers.lecturer);
-  const staffNo = useLecturerScope(lecturerProfile.staffNo);
+  const staffNo = useLecturerScope(
+    portalUsers.lecturer.identifier ?? "STF-CS-001",
+  );
   const { data: period } = useCurrentAcademicPeriod();
   const academicPeriod = period ?? currentAcademicPeriod;
-  const { data = [], isLoading, isError, error } = useLecturerCourses(
-    staffNo,
-  );
+  const { data = [], isLoading, isError, error } = useLecturerCourses(staffNo);
   const assigned = data.length;
   const registeredStudents = data.reduce(
     (sum, course) => sum + course.registeredStudents,

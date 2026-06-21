@@ -9,7 +9,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
-import { departmentFilter } from "@/content/table-filters";
+import { departmentFilter } from "@/content/data/table-filters";
 import { useAdminStudents } from "@/features/admin/api/use-admin-lists";
 import { StudentFormDialog } from "@/features/admin/components/admin-crud-dialogs";
 import { createEditActionColumn } from "@/features/admin/components/admin-table-actions";

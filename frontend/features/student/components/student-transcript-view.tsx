@@ -10,8 +10,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { studentProfile, transcriptSummary } from "@/content/demo-data/student";
-import { currentAcademicPeriod, portalUsers } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
 import { useStudentTranscript } from "@/features/student/api/use-student-transcript";
 import { TranscriptRecordCard } from "@/features/student/components/student-list-cards";
 import { TranscriptExportMenu } from "@/features/student/components/transcript-export-menu";
@@ -79,25 +78,62 @@ const columns: ColumnDef<StudentResultRow>[] = [
   },
 ];
 
+function buildTranscriptSummary(
+  rows: StudentResultRow[],
+  userDepartment?: string,
+) {
+  const publishedRows = rows.filter((row) => row.gradePoint !== null);
+  const cgpa = rows.find((row) => row.cgpa !== null)?.cgpa ?? null;
+
+  return {
+    department:
+      rows.find((row) => row.department)?.department ??
+      userDepartment ??
+      "Department not available",
+    cgpa,
+    totalCreditUnits: rows.reduce((sum, row) => sum + row.creditUnits, 0),
+    coursesPassed: publishedRows.filter((row) => (row.gradePoint ?? 0) > 0)
+      .length,
+    coursesInProgress: rows.filter((row) => row.grade === null).length,
+  };
+}
+
 export function StudentTranscriptView() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const user = usePortalUser(portalUsers.student);
-  const matricNo = useStudentScope(studentProfile.matricNo);
-  const { data = [], isLoading, isError, error } = useStudentTranscript(
-    matricNo,
+  const matricNo = useStudentScope(
+    portalUsers.student.identifier ?? "A00025332",
+  );
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+  } = useStudentTranscript(matricNo);
+  const summary = useMemo(
+    () => buildTranscriptSummary(data, user.department),
+    [data, user.department],
   );
 
   const exportMeta = useMemo<TranscriptExportMeta>(
     () => ({
       name: user.name,
       matricNo: user.identifier ?? matricNo,
-      department: transcriptSummary.department,
-      level: transcriptSummary.level,
-      cgpa: transcriptSummary.cgpa,
-      totalCreditUnits: transcriptSummary.totalCreditUnits,
+      department: summary.department,
+      level: user.level ?? "—",
+      cgpa: formatGradePoint(summary.cgpa),
+      totalCreditUnits: summary.totalCreditUnits,
       sessionLabel: currentAcademicPeriod.label,
     }),
-    [matricNo, user.identifier, user.name],
+    [
+      matricNo,
+      summary.cgpa,
+      summary.department,
+      summary.totalCreditUnits,
+      user.identifier,
+      user.level,
+      user.name,
+    ],
   );
 
   return (
@@ -132,30 +168,30 @@ export function StudentTranscriptView() {
         <CardHeader>
           <CardTitle className="text-base">{user.name}</CardTitle>
           <p className="text-muted-foreground text-sm">
-            {user.identifier ?? matricNo} · {transcriptSummary.department} ·
-            Level {transcriptSummary.level}
+            {user.identifier ?? matricNo} · {summary.department} · Level{" "}
+            {user.level ?? "—"}
           </p>
         </CardHeader>
         <CardContent>
           <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               label="CGPA"
-              value={transcriptSummary.cgpa}
+              value={formatGradePoint(summary.cgpa)}
               helper="Cumulative grade point average"
             />
             <StatCard
               label="Credit Units"
-              value={String(transcriptSummary.totalCreditUnits)}
+              value={String(summary.totalCreditUnits)}
               helper={currentAcademicPeriod.label}
             />
             <StatCard
               label="Courses Passed"
-              value={String(transcriptSummary.coursesPassed)}
+              value={String(summary.coursesPassed)}
               helper="With published grades"
             />
             <StatCard
               label="In Progress"
-              value={String(transcriptSummary.coursesInProgress)}
+              value={String(summary.coursesInProgress)}
               helper="Registered, results pending"
             />
           </section>

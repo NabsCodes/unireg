@@ -1,6 +1,6 @@
 import { LoginBrandPanel } from "@/features/auth/components/login-brand-panel";
 import { LoginForm } from "@/features/auth/components/login-form";
-import { pageSeo } from "@/content/seo";
+import { pageSeo } from "@/content/data/seo";
 import { createAuthMetadata } from "@/lib/metadata";
 
 export const metadata = createAuthMetadata(pageSeo.auth.login);

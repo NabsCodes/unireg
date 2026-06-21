@@ -5,7 +5,7 @@ import {
   lecturerAssignedCourses,
   mth201ResultUploads,
   musaAssignedCourses,
-} from "@/content/demo-data/lecturer";
+} from "@/content/mock/lecturer";
 import {
   mapLecturerCourseRow,
   mapResultRosterRow,

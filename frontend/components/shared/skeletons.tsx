@@ -21,7 +21,9 @@ export function TableSkeleton({
 }: TableSkeletonProps) {
   return (
     <div className="space-y-3">
-      {showToolbar ? <Skeleton className="h-10 w-full max-w-md rounded-lg" /> : null}
+      {showToolbar ? (
+        <Skeleton className="h-10 w-full max-w-md rounded-lg" />
+      ) : null}
       <div className="border-border overflow-hidden rounded-lg border">
         <div className="bg-muted/40 border-border border-b px-4 py-3">
           <Skeleton className="h-4 w-full rounded-md" />

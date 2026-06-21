@@ -73,4 +73,4 @@ Demo logins use seeded users from `database/02_seed.sql` (password `demo1234` fo
 
 ### Mock mode (optional fallback only)
 
-If `NEXT_PUBLIC_DATA_SOURCE` is not `api`, the frontend falls back to static rows in `frontend/content/demo-data/`. That path is for offline UI work only and is **not** the presentation source of truth.
+If `NEXT_PUBLIC_DATA_SOURCE` is not `api`, the frontend falls back to static rows in `frontend/content/mock/`. That path is for offline UI work only and is **not** the presentation source of truth.

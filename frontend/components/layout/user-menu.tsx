@@ -9,8 +9,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import { clearAuth } from "@/lib/auth/session";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -28,8 +29,10 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   function handleSignOut() {
+    queryClient.clear();
     clearAuth();
     router.push("/login");
   }

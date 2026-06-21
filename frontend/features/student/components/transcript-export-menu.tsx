@@ -61,12 +61,11 @@ export function TranscriptExportMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button disabled={disabled || isBusy || rows.length === 0} variant="outline">
-          {isBusy ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <Download />
-          )}
+        <Button
+          disabled={disabled || isBusy || rows.length === 0}
+          variant="outline"
+        >
+          {isBusy ? <Loader2 className="animate-spin" /> : <Download />}
           {isBusy ? "Exporting..." : "Export"}
           {!isBusy ? <ChevronDown /> : null}
         </Button>

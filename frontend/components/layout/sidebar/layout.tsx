@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import { SidebarProvider, useSidebar } from "./context";
 import { SidebarNav, type SidebarNavItem } from "./sidebar-nav";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import { SidebarLayout } from "./sidebar/layout";
 import type { SidebarNavItem } from "./sidebar/sidebar-nav";
 import { Topbar } from "./topbar";

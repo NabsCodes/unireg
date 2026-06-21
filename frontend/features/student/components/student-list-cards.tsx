@@ -34,7 +34,9 @@ export function RegistrationOfferingCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-medium">{offering.courseCode}</p>
-          <p className="text-muted-foreground text-sm">{offering.courseTitle}</p>
+          <p className="text-muted-foreground text-sm">
+            {offering.courseTitle}
+          </p>
         </div>
         <RegistrationActions
           layout="card"
@@ -93,15 +95,12 @@ export function StudentResultCard({ result }: { result: StudentResultRow }) {
         <Detail
           label="Total"
           value={
-            <span className="tabular-nums font-medium">
+            <span className="font-medium tabular-nums">
               {formatScore(result.totalScore)}
             </span>
           }
         />
-        <Detail
-          label="GPA"
-          value={formatGradePoint(result.gradePoint)}
-        />
+        <Detail label="GPA" value={formatGradePoint(result.gradePoint)} />
       </dl>
     </article>
   );
@@ -124,10 +123,7 @@ export function TranscriptRecordCard({ result }: { result: StudentResultRow }) {
         <Detail label="Credits" value={result.creditUnits} />
         <Detail label="Score" value={formatScore(result.totalScore)} />
         <Detail label="Grade" value={result.grade ?? "—"} />
-        <Detail
-          label="GPA"
-          value={formatGradePoint(result.gradePoint)}
-        />
+        <Detail label="GPA" value={formatGradePoint(result.gradePoint)} />
       </dl>
     </article>
   );

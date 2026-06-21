@@ -48,14 +48,15 @@ features/{role}/api/use-*.ts   → React Query hooks
 lib/api/*.ts                   → fetch functions (mock or FastAPI)
 lib/api/client.ts              → apiGet / apiPost
 lib/api/query-keys.ts          → stable invalidation keys
-content/demo-data/             → seed-aligned mock rows (mock mode only)
+content/data/                  → static app copy, navigation, portal context
+content/mock/                  → seed-aligned mock rows (mock mode only)
 types/academic.ts              → UI row models
 types/api.ts                   → wire-format + mappers
 ```
 
 - Default data source: **`NEXT_PUBLIC_DATA_SOURCE=api`** (live PostgreSQL via FastAPI)
-- Mock fallback: any other `NEXT_PUBLIC_DATA_SOURCE` value → `content/demo-data/` through `lib/api/`
-- Views must not import `content/demo-data/` directly; read through `lib/api/` hooks instead
+- Mock fallback: any other `NEXT_PUBLIC_DATA_SOURCE` value → `content/mock/` through `lib/api/`
+- Views must not import `content/mock/` directly; read through `lib/api/` hooks instead
 
 ## Components
 
@@ -129,14 +130,14 @@ Do not use one-off static HTML tables for scalable list pages.
 
 ## Content Ownership
 
-- Navigation: `frontend/content/navigation.ts`
-- Portal context: `frontend/content/portal.ts`
-- SEO copy: `frontend/content/seo.ts`
-- Demo rows: `frontend/content/demo-data/` (consumed by `lib/api/` in mock mode)
-- Shared table filters: `frontend/content/table-filters.ts`
+- Navigation: `frontend/content/data/navigation.ts`
+- Portal context: `frontend/content/data/portal.ts`
+- SEO copy: `frontend/content/data/seo.ts`
+- Mock rows: `frontend/content/mock/` (consumed by `lib/api/` in mock mode)
+- Shared table filters: `frontend/content/data/table-filters.ts`
 
 ## Metadata
 
 - Factories: `frontend/lib/metadata.ts`
-- Copy source: `frontend/content/seo.ts`
+- Copy source: `frontend/content/data/seo.ts`
 - Route files export metadata and render a feature view

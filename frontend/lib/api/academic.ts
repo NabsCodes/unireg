@@ -1,6 +1,6 @@
 import { apiGet } from "@/lib/api/client";
 import { usesMockData } from "@/lib/api/config";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod } from "@/content/data/portal";
 
 export type CurrentAcademicPeriod = {
   session: string;

@@ -17,9 +17,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAdminOfferings } from "@/features/admin/api/use-admin-lists";
 import { useAdminOfferingResults } from "@/features/admin/api/use-admin-results";
-import {
-  AdminResultEditAction,
-} from "@/features/admin/components/admin-result-edit-dialog";
+import { AdminResultEditAction } from "@/features/admin/components/admin-result-edit-dialog";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { ResultUploadRow } from "@/types/academic";
 
@@ -85,7 +83,7 @@ export function AdminResultsView() {
         accessorKey: "totalScore",
         header: "Total",
         cell: ({ row }) => (
-          <span className="tabular-nums font-medium">
+          <span className="font-medium tabular-nums">
             {formatScore(row.getValue("totalScore"))}
           </span>
         ),
@@ -95,11 +93,7 @@ export function AdminResultsView() {
         header: "Grade",
         cell: ({ row }) => {
           const grade = row.getValue("grade") as string | null;
-          return grade ? (
-            <StatusBadge label={grade} tone="completed" />
-          ) : (
-            "—"
-          );
+          return grade ? <StatusBadge label={grade} tone="completed" /> : "—";
         },
       },
       {

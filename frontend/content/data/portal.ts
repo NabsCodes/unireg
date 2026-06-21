@@ -11,6 +11,7 @@ export type PortalUser = {
   email: string;
   identifier?: string;
   department?: string;
+  level?: string;
   status?: "active" | "inactive";
 };
 
@@ -35,6 +36,7 @@ export const portalUsers = {
     email: "batul.hassan@unireg.test",
     identifier: "A00025332",
     department: "Computer Science",
+    level: "300",
     status: "active",
   },
 } satisfies Record<string, PortalUser>;

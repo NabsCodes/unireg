@@ -6,9 +6,8 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { studentProfile } from "@/content/demo-data/student";
-import { currentAcademicPeriod, portalUsers } from "@/content/portal";
-import { semesterFilter } from "@/content/table-filters";
+import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
+import { semesterFilter } from "@/content/data/table-filters";
 import { useStudentResults } from "@/features/student/api/use-student-results";
 import { StudentResultCard } from "@/features/student/components/student-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
@@ -63,7 +62,7 @@ const columns: ColumnDef<StudentResultRow>[] = [
     accessorKey: "totalScore",
     header: "Total",
     cell: ({ row }) => (
-      <span className="tabular-nums font-medium">
+      <span className="font-medium tabular-nums">
         {formatScore(row.getValue("totalScore"))}
       </span>
     ),
@@ -90,10 +89,10 @@ const columns: ColumnDef<StudentResultRow>[] = [
 
 export function StudentResultsView() {
   const user = usePortalUser(portalUsers.student);
-  const matricNo = useStudentScope(studentProfile.matricNo);
-  const { data = [], isLoading, isError, error } = useStudentResults(
-    matricNo,
+  const matricNo = useStudentScope(
+    portalUsers.student.identifier ?? "A00025332",
   );
+  const { data = [], isLoading, isError, error } = useStudentResults(matricNo);
 
   return (
     <PortalPage>

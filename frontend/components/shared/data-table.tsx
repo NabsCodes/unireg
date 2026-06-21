@@ -34,7 +34,10 @@ import {
 import { createSerialNumberColumn } from "@/lib/data-table/serial-number-column";
 import { getTableColumn } from "@/lib/data-table/get-table-column";
 import { cn } from "@/lib/utils";
-import type { DataTableFilter, DataTableFilterTabs as FilterTabsConfig } from "@/types/data-table";
+import type {
+  DataTableFilter,
+  DataTableFilterTabs as FilterTabsConfig,
+} from "@/types/data-table";
 
 type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -116,9 +119,7 @@ export function DataTable<TData, TValue>({
       if (!filterTabs) return;
 
       const column = getTableColumn(table, filterTabs.columnId);
-      column?.setFilterValue(
-        value === allTabValue ? undefined : value,
-      );
+      column?.setFilterValue(value === allTabValue ? undefined : value);
     },
     [allTabValue, filterTabs, table],
   );
@@ -179,15 +180,14 @@ export function DataTable<TData, TValue>({
               </div>
             ))
           ) : (
-            <DataTableEmpty
-              description={emptyDescription}
-              title={emptyTitle}
-            />
+            <DataTableEmpty description={emptyDescription} title={emptyTitle} />
           )}
         </div>
       ) : null}
 
-      <div className={cn("overflow-x-auto", renderMobileCard && "hidden md:block")}>
+      <div
+        className={cn("overflow-x-auto", renderMobileCard && "hidden md:block")}
+      >
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

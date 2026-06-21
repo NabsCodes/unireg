@@ -31,7 +31,7 @@ The application demo runs against **seeded PostgreSQL data** through FastAPI.
 - Run backend + frontend with `NEXT_PUBLIC_DATA_SOURCE=api` (see root `README.md`).
 - Academic behavior (registration rules, grades, GPA, audit) must remain demonstrable in SQL even when the UI calls the API.
 
-`frontend/content/demo-data/` is a **mock fallback only** when the API is unavailable or `DATA_SOURCE` is not `api`. Do not treat demo-data as the primary source of truth and do not wire new screens to import it directly — read through `frontend/lib/api/` instead.
+`frontend/content/mock/` is a **mock fallback only** when the API is unavailable or `NEXT_PUBLIC_DATA_SOURCE` is not `api`. Do not treat mock data as the primary source of truth and do not wire new screens to import it directly — read through `frontend/lib/api/` instead.
 
 ## Database Rule
 

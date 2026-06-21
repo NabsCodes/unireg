@@ -41,13 +41,15 @@ export function registrationStateMeta(state: RegistrationDisplayState): {
       return {
         label: "Results published",
         tone: "completed",
-        helper: "This registration is locked because a lecturer has uploaded scores.",
+        helper:
+          "This registration is locked because a lecturer has uploaded scores.",
       };
     case "dropped":
       return {
         label: "Dropped",
         tone: "draft",
-        helper: "You previously dropped this course. You can register again if seats remain.",
+        helper:
+          "You previously dropped this course. You can register again if seats remain.",
       };
     default:
       return {

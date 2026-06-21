@@ -1,6 +1,6 @@
 "use client";
 
-import type { PortalUser } from "@/content/portal";
+import type { PortalUser } from "@/content/data/portal";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -52,7 +52,7 @@ export function SidebarNav({
     >
       <SidebarBrand roleLabel={roleLabel} />
 
-      <nav className="scrollbar-thin min-h-0 flex-1 overflow-y-auto px-3 py-4">
+      <nav className="min-h-0 flex-1 scrollbar-thin overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
           {items.map((item) => {
             const active = isNavPathActive(pathname, item.href);
@@ -92,10 +92,7 @@ export function SidebarNav({
           "group-data-[collapsed=true]/sidebar:px-2 group-data-[collapsed=true]/sidebar:py-2",
         )}
       >
-        <SidebarProfile
-          collapsed={effectiveCollapsed}
-          user={user}
-        />
+        <SidebarProfile collapsed={effectiveCollapsed} user={user} />
       </div>
     </div>
   );

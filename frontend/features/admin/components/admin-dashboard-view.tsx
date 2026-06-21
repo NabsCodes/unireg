@@ -4,18 +4,13 @@ import { PageHeader } from "@/components/layout/page-header";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod } from "@/content/data/portal";
 import { useAdminDashboard } from "@/features/admin/api/use-admin-dashboard";
 import { useAdminRecentActivity } from "@/features/admin/api/use-admin-recent-activity";
 import { PortalPage } from "@/features/portal/components/portal-page";
 
 export function AdminDashboardView() {
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-  } = useAdminDashboard();
+  const { data, isLoading, isError, error } = useAdminDashboard();
   const {
     data: activity = [],
     isLoading: activityLoading,

@@ -8,7 +8,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { Button } from "@/components/ui/button";
-import { departmentFilter } from "@/content/table-filters";
+import { departmentFilter } from "@/content/data/table-filters";
 import { useAdminLecturers } from "@/features/admin/api/use-admin-lists";
 import { LecturerFormDialog } from "@/features/admin/components/admin-crud-dialogs";
 import { createEditActionColumn } from "@/features/admin/components/admin-table-actions";

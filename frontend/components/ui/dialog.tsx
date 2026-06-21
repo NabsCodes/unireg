@@ -54,7 +54,7 @@ function isSelectPortalTarget(target: EventTarget | null) {
 
   return Boolean(
     target.closest('[data-slot="select-content"]') ||
-      target.closest('[data-slot="select-viewport"]'),
+    target.closest('[data-slot="select-viewport"]'),
   );
 }
 

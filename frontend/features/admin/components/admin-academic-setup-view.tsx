@@ -111,7 +111,8 @@ export function AdminAcademicSetupView() {
               isError={sessionsError}
               isLoading={sessionsLoading}
               loadingLabel="Loading sessions..."
-              variant="table" rows={3}
+              variant="table"
+              rows={3}
             >
               <DataTable
                 columns={sessionColumns}
@@ -141,7 +142,8 @@ export function AdminAcademicSetupView() {
               isError={semestersError}
               isLoading={semestersLoading}
               loadingLabel="Loading semesters..."
-              variant="table" rows={3}
+              variant="table"
+              rows={3}
             >
               <DataTable
                 columns={semesterColumns}

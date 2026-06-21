@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import {
@@ -14,7 +15,7 @@ export type DashboardSuggestion = {
   id: string;
   title: string;
   description: string;
-  href: string;
+  href: Route;
   icon: LucideIcon;
   tone?: "default" | "action" | "success" | "warning";
 };
@@ -25,10 +26,7 @@ type DashboardSuggestionsProps = {
   description?: string;
 };
 
-const toneStyles: Record<
-  NonNullable<DashboardSuggestion["tone"]>,
-  string
-> = {
+const toneStyles: Record<NonNullable<DashboardSuggestion["tone"]>, string> = {
   default: "bg-muted text-foreground",
   action: "bg-primary text-primary-foreground",
   success: "bg-unireg-success-subtle text-unireg-success",
@@ -57,7 +55,7 @@ export function DashboardSuggestions({
 
           return (
             <Link
-              className="border-border hover:bg-muted/60 focus-visible:ring-ring group flex items-start gap-3 rounded-lg border p-3 outline-none transition-colors focus-visible:ring-2"
+              className="border-border hover:bg-muted/60 focus-visible:ring-ring group flex items-start gap-3 rounded-lg border p-3 transition-colors outline-none focus-visible:ring-2"
               href={suggestion.href}
               key={suggestion.id}
             >

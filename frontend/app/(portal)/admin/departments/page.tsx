@@ -1,4 +1,4 @@
-import { pageSeo } from "@/content/seo";
+import { pageSeo } from "@/content/data/seo";
 import { AdminDepartmentsView } from "@/features/admin/components/admin-departments-view";
 import { createPortalMetadata } from "@/lib/metadata";
 

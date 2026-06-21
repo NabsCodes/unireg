@@ -5,7 +5,7 @@ import {
   registeredCourses,
   studentProfile,
   studentResults,
-} from "@/content/demo-data/student";
+} from "@/content/mock/student";
 import {
   mapAvailableOfferingRow,
   mapStudentDashboard,

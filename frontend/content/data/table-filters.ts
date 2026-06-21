@@ -1,4 +1,7 @@
-import type { DataTableFilter, DataTableFilterOption } from "@/types/data-table";
+import type {
+  DataTableFilter,
+  DataTableFilterOption,
+} from "@/types/data-table";
 
 export const departmentFilterOptions = [
   { value: "Computer Science", label: "Computer Science" },

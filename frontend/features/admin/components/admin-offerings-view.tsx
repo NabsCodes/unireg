@@ -16,7 +16,7 @@ import { createEditActionColumn } from "@/features/admin/components/admin-table-
 import {
   offeringStatusFilter,
   semesterFilter,
-} from "@/content/table-filters";
+} from "@/content/data/table-filters";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { OfferingRow } from "@/types/academic";
 

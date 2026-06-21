@@ -6,8 +6,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { lecturerProfile } from "@/content/demo-data/lecturer";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
 import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
 import { LecturerCourseCard } from "@/features/lecturer/components/lecturer-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
@@ -70,10 +69,10 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
 ];
 
 export function LecturerCoursesView() {
-  const staffNo = useLecturerScope(lecturerProfile.staffNo);
-  const { data = [], isLoading, isError, error } = useLecturerCourses(
-    staffNo,
+  const staffNo = useLecturerScope(
+    portalUsers.lecturer.identifier ?? "STF-CS-001",
   );
+  const { data = [], isLoading, isError, error } = useLecturerCourses(staffNo);
 
   return (
     <PortalPage>

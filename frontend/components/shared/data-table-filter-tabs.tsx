@@ -32,7 +32,7 @@ export function DataTableFilterTabs<T extends string = string>({
       <div
         role="group"
         aria-label={ariaLabel}
-        className="flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex min-w-0 [scrollbar-width:none] items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden"
       >
         {options.map((option) => {
           const isActive = value === option.value;

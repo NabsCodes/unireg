@@ -34,10 +34,7 @@ export function LecturerCourseCard({ course }: { course: LecturerCourseRow }) {
       <dl className="grid grid-cols-2 gap-3">
         <Detail label="Session" value={course.session} />
         <Detail label="Semester" value={course.semester} />
-        <Detail
-          label="Registered"
-          value={String(course.registeredStudents)}
-        />
+        <Detail label="Registered" value={String(course.registeredStudents)} />
         <Detail
           label="Uploaded"
           value={`${course.resultsUploaded}/${course.registeredStudents}`}

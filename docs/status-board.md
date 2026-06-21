@@ -53,8 +53,8 @@
 
 ### Mock fallback (not migrated away)
 
-- [x] `frontend/content/demo-data/` kept for offline UI when `DATA_SOURCE≠api`
-- [x] No requirement to remove demo-data; live PostgreSQL is the presentation path
+- [x] `frontend/content/mock/` kept for offline UI when `NEXT_PUBLIC_DATA_SOURCE≠api`
+- [x] No requirement to remove mock data; live PostgreSQL is the presentation path
 
 ## Delivery
 

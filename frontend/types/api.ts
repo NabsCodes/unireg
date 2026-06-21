@@ -304,6 +304,9 @@ export function mapStudentResultRow(
 ): StudentResultRow {
   return {
     id: String(index + 1),
+    matricNo: row.matric_no,
+    studentName: row.student_name,
+    department: row.dept_name,
     session: row.session_name,
     semester: row.semester_name,
     courseCode: row.course_code,
@@ -314,6 +317,8 @@ export function mapStudentResultRow(
     totalScore: toNumberOrNull(row.total_score),
     grade: row.grade,
     gradePoint: toNumberOrNull(row.grade_point),
+    semesterGpa: toNumberOrNull(row.semester_gpa),
+    cgpa: toNumberOrNull(row.cgpa),
   };
 }
 
@@ -425,7 +430,10 @@ export function mapAdminLecturerRow(
   };
 }
 
-export function mapAdminCourseRow(row: ApiCourseRow, _index: number): CourseRow {
+export function mapAdminCourseRow(
+  row: ApiCourseRow,
+  _index: number,
+): CourseRow {
   return {
     id: String(row.course_id),
     code: row.course_code,
@@ -447,7 +455,10 @@ export function mapSessionRow(row: ApiSessionRow, index: number): SessionRow {
   };
 }
 
-export function mapSemesterRow(row: ApiSemesterRow, index: number): SemesterRow {
+export function mapSemesterRow(
+  row: ApiSemesterRow,
+  index: number,
+): SemesterRow {
   return {
     id: String(row.semester_id ?? index + 1),
     sessionId: row.session_id,
@@ -458,7 +469,10 @@ export function mapSemesterRow(row: ApiSemesterRow, index: number): SemesterRow 
   };
 }
 
-export function mapOfferingRow(row: ApiOfferingRow, _index: number): OfferingRow {
+export function mapOfferingRow(
+  row: ApiOfferingRow,
+  _index: number,
+): OfferingRow {
   const status =
     row.status === "open"
       ? "open"
@@ -494,7 +508,10 @@ function formatAuditTimestamp(value: string): string {
   });
 }
 
-export function mapAuditLogRow(row: ApiAuditLogRow, index: number): AuditLogRow {
+export function mapAuditLogRow(
+  row: ApiAuditLogRow,
+  index: number,
+): AuditLogRow {
   const detailSource = row.new_values ?? row.old_values;
   const detail =
     detailSource && Object.keys(detailSource).length > 0
@@ -512,7 +529,8 @@ export function mapAuditLogRow(row: ApiAuditLogRow, index: number): AuditLogRow 
 }
 
 function humanizeAuditAction(row: ApiAuditLogRow): string {
-  const actor = row.actor_name ?? (row.user_id ? `User #${row.user_id}` : "System");
+  const actor =
+    row.actor_name ?? (row.user_id ? `User #${row.user_id}` : "System");
   const action = row.action.toUpperCase();
 
   if (action === "RESULT_INSERTED") {

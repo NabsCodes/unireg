@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { currentAcademicPeriod } from "@/content/portal";
+import { currentAcademicPeriod } from "@/content/data/portal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   downloadTranscriptCsv,
@@ -79,7 +79,9 @@ export function TranscriptPreviewSheet({
 
             <div className="grid gap-4 px-4 py-4 sm:grid-cols-2 sm:px-5">
               <div>
-                <p className="text-muted-foreground text-xs uppercase">Student</p>
+                <p className="text-muted-foreground text-xs uppercase">
+                  Student
+                </p>
                 <p className="font-medium">{meta.name}</p>
               </div>
               <div>
@@ -182,7 +184,9 @@ export function TranscriptPreviewSheet({
                 </p>
               </div>
               <div>
-                <p className="text-muted-foreground text-xs uppercase">Period</p>
+                <p className="text-muted-foreground text-xs uppercase">
+                  Period
+                </p>
                 <p className="text-sm">{currentAcademicPeriod.label}</p>
               </div>
             </div>
@@ -192,7 +196,9 @@ export function TranscriptPreviewSheet({
         <SheetFooter className="border-border shrink-0 gap-2 border-t px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:flex-row sm:px-6">
           <Button
             className="w-full sm:flex-1"
-            onClick={() => downloadTranscriptCsv({ rows, matricNo: meta.matricNo })}
+            onClick={() =>
+              downloadTranscriptCsv({ rows, matricNo: meta.matricNo })
+            }
             type="button"
             variant="outline"
           >

@@ -170,7 +170,11 @@ export function DepartmentFormDialog({
         submitLabel={isEdit ? "Update" : "Create"}
         title={isEdit ? "Edit department" : "Add department"}
       >
-        <TextFormField control={form.control} label="Department name" name="dept_name" />
+        <TextFormField
+          control={form.control}
+          label="Department name"
+          name="dept_name"
+        />
         <TextFormField control={form.control} label="Faculty" name="faculty" />
         <SelectFormField
           allowEmpty
@@ -307,7 +311,11 @@ export function StudentFormDialog({
         title={isEdit ? "Edit student" : "Add student"}
       >
         {!isEdit ? (
-          <TextFormField control={form.control} label="Matric number" name="matric_no" />
+          <TextFormField
+            control={form.control}
+            label="Matric number"
+            name="matric_no"
+          />
         ) : (
           <TextFormField
             control={form.control}
@@ -316,9 +324,22 @@ export function StudentFormDialog({
             name="matric_no"
           />
         )}
-        <TextFormField control={form.control} label="First name" name="first_name" />
-        <TextFormField control={form.control} label="Last name" name="last_name" />
-        <TextFormField control={form.control} label="Email" name="email" type="email" />
+        <TextFormField
+          control={form.control}
+          label="First name"
+          name="first_name"
+        />
+        <TextFormField
+          control={form.control}
+          label="Last name"
+          name="last_name"
+        />
+        <TextFormField
+          control={form.control}
+          label="Email"
+          name="email"
+          type="email"
+        />
         <TextFormField control={form.control} label="Level" name="level" />
         <SelectFormField
           control={form.control}
@@ -444,7 +465,9 @@ export function LecturerFormDialog({
     <>
       <RecordFormDialog
         description={
-          isEdit ? "Update lecturer profile details." : "Add a new lecturer profile."
+          isEdit
+            ? "Update lecturer profile details."
+            : "Add a new lecturer profile."
         }
         form={form}
         isSubmitting={isSubmitting}
@@ -461,9 +484,22 @@ export function LecturerFormDialog({
           name="staff_no"
         />
         <TextFormField control={form.control} label="Title" name="title" />
-        <TextFormField control={form.control} label="First name" name="first_name" />
-        <TextFormField control={form.control} label="Last name" name="last_name" />
-        <TextFormField control={form.control} label="Email" name="email" type="email" />
+        <TextFormField
+          control={form.control}
+          label="First name"
+          name="first_name"
+        />
+        <TextFormField
+          control={form.control}
+          label="Last name"
+          name="last_name"
+        />
+        <TextFormField
+          control={form.control}
+          label="Email"
+          name="email"
+          type="email"
+        />
         <SelectFormField
           control={form.control}
           label="Department"
@@ -573,7 +609,9 @@ export function CourseFormDialog({
     <>
       <RecordFormDialog
         description={
-          isEdit ? "Update course metadata." : "Add a new course to the catalog."
+          isEdit
+            ? "Update course metadata."
+            : "Add a new course to the catalog."
         }
         form={form}
         isSubmitting={isSubmitting}
@@ -589,7 +627,11 @@ export function CourseFormDialog({
           label="Course code"
           name="course_code"
         />
-        <TextFormField control={form.control} label="Course title" name="course_title" />
+        <TextFormField
+          control={form.control}
+          label="Course title"
+          name="course_title"
+        />
         <TextFormField
           control={form.control}
           label="Credit units"
@@ -838,18 +880,37 @@ export function SessionFormDialog({ open, onOpenChange }: BaseDialogProps) {
         submitLabel="Create"
         title="Add session"
       >
-        <TextFormField control={form.control} label="Session name" name="session_name" />
-        <TextFormField control={form.control} label="Start date" name="start_date" type="date" />
-        <TextFormField control={form.control} label="End date" name="end_date" type="date" />
+        <TextFormField
+          control={form.control}
+          label="Session name"
+          name="session_name"
+        />
+        <TextFormField
+          control={form.control}
+          label="Start date"
+          name="start_date"
+          type="date"
+        />
+        <TextFormField
+          control={form.control}
+          label="End date"
+          name="end_date"
+          type="date"
+        />
         <FormField
           control={form.control}
           name="is_current"
           render={({ field }) => (
             <FormItem className="flex items-center gap-2 space-y-0">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
-              <FormLabel className="font-normal">Set as current session</FormLabel>
+              <FormLabel className="font-normal">
+                Set as current session
+              </FormLabel>
               <FormMessage />
             </FormItem>
           )}
@@ -956,8 +1017,18 @@ export function SemesterFormDialog({ open, onOpenChange }: BaseDialogProps) {
             { value: "Summer", label: "Summer" },
           ]}
         />
-        <TextFormField control={form.control} label="Start date" name="start_date" type="date" />
-        <TextFormField control={form.control} label="End date" name="end_date" type="date" />
+        <TextFormField
+          control={form.control}
+          label="Start date"
+          name="start_date"
+          type="date"
+        />
+        <TextFormField
+          control={form.control}
+          label="End date"
+          name="end_date"
+          type="date"
+        />
       </RecordFormDialog>
       <FeedbackDialog
         description={feedback?.description ?? ""}

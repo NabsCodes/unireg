@@ -7,7 +7,9 @@ export async function login(
   password: string,
 ): Promise<ApiLoginResponse> {
   if (usesMockData()) {
-    throw new Error("Login API is only available when NEXT_PUBLIC_DATA_SOURCE=api.");
+    throw new Error(
+      "Login API is only available when NEXT_PUBLIC_DATA_SOURCE=api.",
+    );
   }
 
   return apiPost<ApiLoginResponse, { identifier: string; password: string }>(

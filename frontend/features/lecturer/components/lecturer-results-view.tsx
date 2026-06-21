@@ -17,8 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { lecturerProfile } from "@/content/demo-data/lecturer";
-import { portalUsers } from "@/content/portal";
+import { portalUsers } from "@/content/data/portal";
 import { useLecturerCourses } from "@/features/lecturer/api/use-lecturer-courses";
 import { useLecturerOfferingResults } from "@/features/lecturer/api/use-upload-result";
 import { ResultUploadAction } from "@/features/lecturer/components/result-upload-dialog";
@@ -34,7 +33,9 @@ function formatScore(value: number | null): string {
 
 export function LecturerResultsView() {
   const user = usePortalUser(portalUsers.lecturer);
-  const staffNo = useLecturerScope(lecturerProfile.staffNo);
+  const staffNo = useLecturerScope(
+    portalUsers.lecturer.identifier ?? "STF-CS-001",
+  );
   const searchParams = useSearchParams();
   const offeringFromUrl = (() => {
     const offeringParam = searchParams.get("offering");
@@ -119,7 +120,7 @@ export function LecturerResultsView() {
         accessorKey: "totalScore",
         header: "Total",
         cell: ({ row }) => (
-          <span className="tabular-nums font-medium">
+          <span className="font-medium tabular-nums">
             {formatScore(row.getValue("totalScore"))}
           </span>
         ),
@@ -263,13 +264,14 @@ export function LecturerResultsView() {
 
                 {pendingCount === 0 && sortedRoster.length > 0 ? (
                   <p className="text-muted-foreground rounded-lg border border-dashed px-3 py-2 text-sm">
-                    All registered students already have scores for this offering.
-                    Use <strong>Edit scores</strong> to change an existing result.
+                    All registered students already have scores for this
+                    offering. Use <strong>Edit scores</strong> to change an
+                    existing result.
                   </p>
                 ) : null}
 
                 {pendingCount > 0 ? (
-                  <p className="text-foreground rounded-lg border border-unireg-warning/30 bg-unireg-warning-subtle px-3 py-2 text-sm">
+                  <p className="text-foreground border-unireg-warning/30 bg-unireg-warning-subtle rounded-lg border px-3 py-2 text-sm">
                     {pendingCount} student{pendingCount === 1 ? "" : "s"} still
                     need scores. Use the <strong>Awaiting upload</strong> tab,
                     then click <strong>Upload scores</strong>.

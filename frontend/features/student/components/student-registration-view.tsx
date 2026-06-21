@@ -8,9 +8,8 @@ import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
-import { studentProfile } from "@/content/demo-data/student";
-import { currentAcademicPeriod, portalUsers } from "@/content/portal";
-import { semesterFilter } from "@/content/table-filters";
+import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
+import { semesterFilter } from "@/content/data/table-filters";
 import { useStudentRegistrationOfferings } from "@/features/student/api/use-student-registration";
 import { RegistrationActions } from "@/features/student/components/registration-actions";
 import { RegistrationStatusBadge } from "@/features/student/components/registration-status-badge";
@@ -23,9 +22,15 @@ import type { AvailableOfferingRow } from "@/types/academic";
 
 export function StudentRegistrationView() {
   const user = usePortalUser(portalUsers.student);
-  const matricNo = useStudentScope(studentProfile.matricNo);
-  const { data = [], isLoading, isError, error } =
-    useStudentRegistrationOfferings(matricNo);
+  const matricNo = useStudentScope(
+    portalUsers.student.identifier ?? "A00025332",
+  );
+  const {
+    data = [],
+    isLoading,
+    isError,
+    error,
+  } = useStudentRegistrationOfferings(matricNo);
 
   const columns = useMemo<ColumnDef<AvailableOfferingRow>[]>(
     () => [
@@ -51,9 +56,7 @@ export function StudentRegistrationView() {
         id: "registrationState",
         header: "Your status",
         accessorFn: (row) => getRegistrationDisplayState(row),
-        cell: ({ row }) => (
-          <RegistrationStatusBadge offering={row.original} />
-        ),
+        cell: ({ row }) => <RegistrationStatusBadge offering={row.original} />,
       },
       {
         accessorKey: "creditUnits",
@@ -79,7 +82,9 @@ export function StudentRegistrationView() {
         accessorKey: "status",
         header: "Offering status",
         cell: ({ row }) => {
-          const status = row.getValue("status") as AvailableOfferingRow["status"];
+          const status = row.getValue(
+            "status",
+          ) as AvailableOfferingRow["status"];
           return (
             <StatusBadge
               label={status === "open" ? "Open" : "Closed"}
@@ -140,12 +145,16 @@ export function StudentRegistrationView() {
           />
           <StatCard
             label="My courses"
-            value={String(data.filter((offering) => offering.isRegistered).length)}
+            value={String(
+              data.filter((offering) => offering.isRegistered).length,
+            )}
             helper="Currently registered"
           />
           <StatCard
             label="Available to register"
-            value={String(data.filter((offering) => !offering.isRegistered).length)}
+            value={String(
+              data.filter((offering) => !offering.isRegistered).length,
+            )}
             helper="Not registered yet"
           />
         </section>
