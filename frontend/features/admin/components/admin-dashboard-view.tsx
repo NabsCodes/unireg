@@ -36,6 +36,7 @@ export function AdminDashboardView() {
         isError={isError}
         isLoading={isLoading}
         loadingLabel="Loading dashboard summary..."
+        variant="dashboard"
       >
         {data ? (
           <>
@@ -76,6 +77,7 @@ export function AdminDashboardView() {
                   isError={activityError}
                   isLoading={activityLoading}
                   loadingLabel="Loading recent activity..."
+                  variant="list"
                 >
                   {activity.length === 0 ? (
                     <p className="text-muted-foreground text-sm">

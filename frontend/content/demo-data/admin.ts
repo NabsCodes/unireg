@@ -2,8 +2,11 @@ import type {
   AuditLogRow,
   CourseRow,
   DepartmentRow,
+  GradeScaleRow,
   LecturerRow,
   OfferingRow,
+  SemesterRow,
+  SessionRow,
   StudentRow,
 } from "@/types/academic";
 
@@ -46,6 +49,7 @@ export const departments: DepartmentRow[] = [
     name: "Computer Science",
     faculty: "School of Information Technology and Computing",
     headOfDepartment: "Dr. Gabriel Ayem",
+    hodId: 1,
     studentCount: 2,
   },
   {
@@ -53,6 +57,7 @@ export const departments: DepartmentRow[] = [
     name: "Software Engineering",
     faculty: "School of Information Technology and Computing",
     headOfDepartment: "Engr. Amina Yusuf",
+    hodId: 3,
     studentCount: 1,
   },
   {
@@ -60,7 +65,37 @@ export const departments: DepartmentRow[] = [
     name: "Information Systems",
     faculty: "School of Information Technology and Computing",
     headOfDepartment: "—",
+    hodId: null,
     studentCount: 0,
+  },
+];
+
+export const sessions: SessionRow[] = [
+  {
+    id: "1",
+    name: "2025/2026",
+    startDate: "2025-09-01",
+    endDate: "2026-08-31",
+    isCurrent: true,
+  },
+];
+
+export const semesters: SemesterRow[] = [
+  {
+    id: "1",
+    sessionId: 1,
+    sessionName: "2025/2026",
+    name: "First Semester",
+    startDate: "2025-09-01",
+    endDate: "2026-01-15",
+  },
+  {
+    id: "2",
+    sessionId: 1,
+    sessionName: "2025/2026",
+    name: "Second Semester",
+    startDate: "2026-02-01",
+    endDate: "2026-06-30",
   },
 ];
 
@@ -68,27 +103,36 @@ export const students: StudentRow[] = [
   {
     id: "1",
     matricNo: "A00025332",
+    firstName: "Batul",
+    lastName: "Hassan",
     name: "Batul Hassan",
     email: "batul.hassan@unireg.test",
     department: "Computer Science",
+    departmentId: 1,
     level: "300",
     status: "active",
   },
   {
     id: "2",
     matricNo: "A00024575",
+    firstName: "Simtong",
+    lastName: "Tongnan",
     name: "Simtong Tongnan",
     email: "simtong.tongnan@unireg.test",
     department: "Computer Science",
+    departmentId: 1,
     level: "300",
     status: "active",
   },
   {
     id: "3",
     matricNo: "A00024901",
+    firstName: "Maryam",
+    lastName: "Bello",
     name: "Maryam Bello",
     email: "maryam.bello@unireg.test",
     department: "Software Engineering",
+    departmentId: 2,
     level: "300",
     status: "active",
   },
@@ -98,26 +142,35 @@ export const lecturers: LecturerRow[] = [
   {
     id: "1",
     staffNo: "STF-CS-001",
+    firstName: "Gabriel",
+    lastName: "Ayem",
     name: "Gabriel Ayem",
     email: "gabriel.ayem@unireg.test",
     title: "Dr.",
     department: "Computer Science",
+    departmentId: 1,
   },
   {
     id: "2",
     staffNo: "STF-CS-002",
+    firstName: "Musa",
+    lastName: "Danjuma",
     name: "Musa Danjuma",
     email: "musa.danjuma@unireg.test",
     title: "Dr.",
     department: "Computer Science",
+    departmentId: 1,
   },
   {
     id: "3",
     staffNo: "STF-SE-001",
+    firstName: "Amina",
+    lastName: "Yusuf",
     name: "Amina Yusuf",
     email: "amina.yusuf@unireg.test",
     title: "Engr.",
     department: "Software Engineering",
+    departmentId: 2,
   },
 ];
 
@@ -129,6 +182,7 @@ export const courses: CourseRow[] = [
     creditUnits: 3,
     level: "300",
     department: "Computer Science",
+    departmentId: 1,
   },
   {
     id: "2",
@@ -137,6 +191,7 @@ export const courses: CourseRow[] = [
     creditUnits: 3,
     level: "300",
     department: "Computer Science",
+    departmentId: 1,
   },
   {
     id: "3",
@@ -145,6 +200,7 @@ export const courses: CourseRow[] = [
     creditUnits: 3,
     level: "300",
     department: "Software Engineering",
+    departmentId: 2,
   },
   {
     id: "4",
@@ -153,12 +209,15 @@ export const courses: CourseRow[] = [
     creditUnits: 2,
     level: "200",
     department: "Computer Science",
+    departmentId: 1,
   },
 ];
 
 export const courseOfferings: OfferingRow[] = [
   {
     id: "1",
+    courseId: 1,
+    semesterId: 1,
     courseCode: "CSC384",
     courseTitle: "Database Systems",
     session: "2025/2026",
@@ -167,9 +226,12 @@ export const courseOfferings: OfferingRow[] = [
     registered: 2,
     status: "open",
     lecturer: "Dr. Gabriel Ayem",
+    lecturerIds: [1],
   },
   {
     id: "2",
+    courseId: 2,
+    semesterId: 1,
     courseCode: "CSC302",
     courseTitle: "Operating Systems",
     session: "2025/2026",
@@ -178,9 +240,12 @@ export const courseOfferings: OfferingRow[] = [
     registered: 2,
     status: "open",
     lecturer: "Dr. Musa Danjuma",
+    lecturerIds: [2],
   },
   {
     id: "3",
+    courseId: 4,
+    semesterId: 1,
     courseCode: "MTH201",
     courseTitle: "Numerical Methods",
     session: "2025/2026",
@@ -189,9 +254,12 @@ export const courseOfferings: OfferingRow[] = [
     registered: 2,
     status: "open",
     lecturer: "Dr. Musa Danjuma",
+    lecturerIds: [2],
   },
   {
     id: "4",
+    courseId: 3,
+    semesterId: 2,
     courseCode: "CSC305",
     courseTitle: "Software Engineering",
     session: "2025/2026",
@@ -200,6 +268,7 @@ export const courseOfferings: OfferingRow[] = [
     registered: 0,
     status: "open",
     lecturer: "Engr. Amina Yusuf",
+    lecturerIds: [3],
   },
 ];
 
@@ -252,4 +321,17 @@ export const auditLogs: AuditLogRow[] = [
     entity: "2025/2026 First Semester",
     detail: "Course offerings published for the current session.",
   },
+];
+
+export const gradeScale: GradeScaleRow[] = [
+  { id: "1", grade: "A", minScore: 93, maxScore: 100, gradePoint: 4.0, remark: "Excellent" },
+  { id: "2", grade: "A-", minScore: 90, maxScore: 92.99, gradePoint: 3.7, remark: "Excellent" },
+  { id: "3", grade: "B+", minScore: 87, maxScore: 89.99, gradePoint: 3.3, remark: "Very Good" },
+  { id: "4", grade: "B", minScore: 83, maxScore: 86.99, gradePoint: 3.0, remark: "Very Good" },
+  { id: "5", grade: "B-", minScore: 80, maxScore: 82.99, gradePoint: 2.7, remark: "Good" },
+  { id: "6", grade: "C+", minScore: 77, maxScore: 79.99, gradePoint: 2.3, remark: "Good" },
+  { id: "7", grade: "C", minScore: 73, maxScore: 76.99, gradePoint: 2.0, remark: "Satisfactory" },
+  { id: "8", grade: "C-", minScore: 70, maxScore: 72.99, gradePoint: 1.7, remark: "Pass" },
+  { id: "9", grade: "D", minScore: 60, maxScore: 69.99, gradePoint: 1.0, remark: "Poor" },
+  { id: "10", grade: "F", minScore: 0, maxScore: 59.99, gradePoint: 0.0, remark: "Fail" },
 ];

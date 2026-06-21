@@ -48,6 +48,9 @@ export const availableOfferings: AvailableOfferingRow[] = [
     registered: 2,
     status: "open",
     isRegistered: true,
+    registrationStatus: "registered",
+    hasResults: true,
+    canDrop: false,
   },
   {
     id: "2",
@@ -59,6 +62,9 @@ export const availableOfferings: AvailableOfferingRow[] = [
     registered: 2,
     status: "open",
     isRegistered: true,
+    registrationStatus: "registered",
+    hasResults: true,
+    canDrop: false,
   },
   {
     id: "3",
@@ -70,6 +76,9 @@ export const availableOfferings: AvailableOfferingRow[] = [
     registered: 2,
     status: "open",
     isRegistered: true,
+    registrationStatus: "registered",
+    hasResults: false,
+    canDrop: true,
   },
   {
     id: "4",
@@ -81,6 +90,9 @@ export const availableOfferings: AvailableOfferingRow[] = [
     registered: 0,
     status: "open",
     isRegistered: false,
+    registrationStatus: null,
+    hasResults: false,
+    canDrop: false,
   },
 ];
 

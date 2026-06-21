@@ -3,6 +3,8 @@ import { usesMockData } from "@/lib/api/config";
 import {
   csc384ResultUploads,
   lecturerAssignedCourses,
+  mth201ResultUploads,
+  musaAssignedCourses,
 } from "@/content/demo-data/lecturer";
 import {
   mapLecturerCourseRow,
@@ -13,20 +15,14 @@ import {
 } from "@/types/api";
 import type { LecturerCourseRow, ResultUploadRow } from "@/types/academic";
 
-const CSC384_OFFERING_ID = 1;
-
-function resolveOfferingId(courseCode: string): number {
-  if (courseCode === "CSC384") {
-    return CSC384_OFFERING_ID;
-  }
-
-  return CSC384_OFFERING_ID;
-}
-
 export async function getLecturerCourses(
   staffNo: string,
 ): Promise<LecturerCourseRow[]> {
   if (usesMockData()) {
+    if (staffNo === "STF-CS-002" || staffNo === "musa.danjuma@unireg.test") {
+      return musaAssignedCourses;
+    }
+
     return lecturerAssignedCourses;
   }
 
@@ -39,19 +35,22 @@ export async function getLecturerCourses(
   return rows.map((row, index) => mapLecturerCourseRow(row, index));
 }
 
-export async function getLecturerCourseResults(
+export async function getLecturerOfferingResults(
   _staffNo: string,
-  courseCode: string,
+  offeringId: number,
 ): Promise<ResultUploadRow[]> {
   if (usesMockData()) {
-    if (courseCode === "CSC384") {
+    if (offeringId === 1) {
       return csc384ResultUploads;
+    }
+
+    if (offeringId === 3) {
+      return mth201ResultUploads;
     }
 
     return [];
   }
 
-  const offeringId = resolveOfferingId(courseCode);
   const rows = await apiGet<ApiLecturerResultRosterRow[]>(
     `/api/lecturers/me/result-roster?offering_id=${offeringId}`,
   );

@@ -1,8 +1,8 @@
 # UniReg Backend
 
-Python API for UniReg.
+Python API for UniReg. The Next.js frontend reads **live data from PostgreSQL** through these routes when `NEXT_PUBLIC_DATA_SOURCE=api`.
 
-Current recommendation: FastAPI with PostgreSQL.
+Stack: FastAPI + PostgreSQL (raw SQL in services, no ORM).
 
 ## Setup
 

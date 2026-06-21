@@ -9,6 +9,9 @@ import type {
   OfferingRow,
   ResultUploadRow,
   StudentResultRow,
+  StudentDashboardSummary,
+  SessionRow,
+  SemesterRow,
   StudentRow,
 } from "@/types/academic";
 import { toNumberOrNull } from "@/lib/format/academic";
@@ -55,6 +58,8 @@ export type ApiAvailableCourseOffering = {
 export type ApiStudentAvailableCourseOffering = ApiAvailableCourseOffering & {
   is_registered: boolean;
   registration_status: string | null;
+  has_results: boolean;
+  can_drop: boolean;
 };
 
 export type ApiStudentResultRow = {
@@ -75,7 +80,32 @@ export type ApiStudentResultRow = {
   cgpa: number | null;
 };
 
+export type ApiStudentDashboardRegisteredCourse = {
+  reg_id: number;
+  offering_id: number;
+  course_code: string;
+  course_title: string;
+  credit_units: number;
+  status: string;
+  semester_name: string;
+};
+
+export type ApiStudentDashboardSummary = {
+  matric_no: string;
+  student_name: string;
+  email: string;
+  level: string;
+  dept_name: string;
+  session_name: string;
+  semester_name: string | null;
+  registered_count: number;
+  semester_gpa: number | null;
+  cgpa: number | null;
+  registered_courses: ApiStudentDashboardRegisteredCourse[];
+};
+
 export type ApiLecturerCourseRow = {
+  offering_id: number;
   staff_no: string;
   lecturer_name: string;
   course_code: string;
@@ -106,6 +136,7 @@ export type ApiDepartmentRow = {
   faculty: string;
   hod_id: number | null;
   hod_name: string | null;
+  student_count: number;
 };
 
 export type ApiStudentRow = {
@@ -153,6 +184,24 @@ export type ApiOfferingRow = {
   status: string;
   registered_students: number;
   lecturers: string[];
+  lecturer_ids?: number[];
+};
+
+export type ApiSessionRow = {
+  session_id: number;
+  session_name: string;
+  start_date: string;
+  end_date: string;
+  is_current: boolean;
+};
+
+export type ApiSemesterRow = {
+  semester_id: number;
+  session_id: number;
+  session_name: string;
+  semester_name: string;
+  start_date: string;
+  end_date: string;
 };
 
 export type ApiAuditLogRow = {
@@ -223,6 +272,32 @@ export function mapDashboardSummary(
   };
 }
 
+export function mapStudentDashboard(
+  summary: ApiStudentDashboardSummary,
+): StudentDashboardSummary {
+  return {
+    matricNo: summary.matric_no,
+    name: summary.student_name,
+    email: summary.email,
+    level: summary.level,
+    department: summary.dept_name,
+    session: summary.session_name,
+    semester: summary.semester_name,
+    registeredCount: summary.registered_count,
+    semesterGpa: toNumberOrNull(summary.semester_gpa),
+    cgpa: toNumberOrNull(summary.cgpa),
+    registeredCourses: summary.registered_courses.map((course, index) => ({
+      id: String(course.reg_id ?? index + 1),
+      offeringId: course.offering_id,
+      courseCode: course.course_code,
+      courseTitle: course.course_title,
+      creditUnits: course.credit_units,
+      status: course.status,
+      semester: course.semester_name,
+    })),
+  };
+}
+
 export function mapStudentResultRow(
   row: ApiStudentResultRow,
   index: number,
@@ -248,6 +323,7 @@ export function mapLecturerCourseRow(
 ): LecturerCourseRow {
   return {
     id: String(index + 1),
+    offeringId: row.offering_id,
     courseCode: row.course_code,
     courseTitle: row.course_title,
     session: row.session_name,
@@ -261,9 +337,11 @@ export function mapAvailableOfferingRow(
   row: ApiAvailableCourseOffering | ApiStudentAvailableCourseOffering,
   isRegisteredOverride?: boolean,
 ): AvailableOfferingRow {
+  const isStudentRow = "is_registered" in row;
   const isRegistered =
-    isRegisteredOverride ??
-    ("is_registered" in row ? row.is_registered : false);
+    isRegisteredOverride ?? (isStudentRow ? row.is_registered : false);
+  const hasResults = isStudentRow ? row.has_results : false;
+  const canDrop = isStudentRow ? row.can_drop : false;
 
   return {
     id: String(row.offering_id),
@@ -275,6 +353,9 @@ export function mapAvailableOfferingRow(
     registered: row.registered_students,
     status: row.status === "open" ? "open" : "closed",
     isRegistered,
+    registrationStatus: isStudentRow ? row.registration_status : null,
+    hasResults,
+    canDrop,
   };
 }
 
@@ -282,8 +363,6 @@ export function mapResultRosterRow(
   row: ApiLecturerResultRosterRow,
   index: number,
 ): ResultUploadRow {
-  const hasScores = row.ca_score !== null && row.exam_score !== null;
-
   return {
     id: String(index + 1),
     regId: row.reg_id,
@@ -293,7 +372,7 @@ export function mapResultRosterRow(
     examScore: toNumberOrNull(row.exam_score),
     totalScore: toNumberOrNull(row.total_score),
     grade: row.grade,
-    status: hasScores ? "Uploaded" : "Pending",
+    status: row.status === "Uploaded" ? "Uploaded" : "Pending",
   };
 }
 
@@ -306,7 +385,8 @@ export function mapDepartmentRow(
     name: row.dept_name,
     faculty: row.faculty,
     headOfDepartment: row.hod_name ?? "—",
-    studentCount: 0,
+    hodId: row.hod_id,
+    studentCount: row.student_count,
   };
 }
 
@@ -317,9 +397,12 @@ export function mapAdminStudentRow(
   return {
     id: String(row.student_id),
     matricNo: row.matric_no,
+    firstName: row.first_name,
+    lastName: row.last_name,
     name: `${row.first_name} ${row.last_name}`,
     email: row.email,
     department: row.dept_name,
+    departmentId: row.dept_id,
     level: row.level,
     status: row.status as StudentRow["status"],
   };
@@ -332,10 +415,13 @@ export function mapAdminLecturerRow(
   return {
     id: String(row.lecturer_id),
     staffNo: row.staff_no,
+    firstName: row.first_name,
+    lastName: row.last_name,
     name: `${row.first_name} ${row.last_name}`,
     email: row.email,
     title: row.title,
     department: row.dept_name,
+    departmentId: row.dept_id,
   };
 }
 
@@ -347,20 +433,52 @@ export function mapAdminCourseRow(row: ApiCourseRow, _index: number): CourseRow 
     creditUnits: row.credit_units,
     level: row.level,
     department: row.dept_name,
+    departmentId: row.dept_id,
+  };
+}
+
+export function mapSessionRow(row: ApiSessionRow, index: number): SessionRow {
+  return {
+    id: String(row.session_id ?? index + 1),
+    name: row.session_name,
+    startDate: row.start_date,
+    endDate: row.end_date,
+    isCurrent: row.is_current,
+  };
+}
+
+export function mapSemesterRow(row: ApiSemesterRow, index: number): SemesterRow {
+  return {
+    id: String(row.semester_id ?? index + 1),
+    sessionId: row.session_id,
+    sessionName: row.session_name,
+    name: row.semester_name,
+    startDate: row.start_date,
+    endDate: row.end_date,
   };
 }
 
 export function mapOfferingRow(row: ApiOfferingRow, _index: number): OfferingRow {
+  const status =
+    row.status === "open"
+      ? "open"
+      : row.status === "archived"
+        ? "archived"
+        : "closed";
+
   return {
     id: String(row.offering_id),
+    courseId: row.course_id,
+    semesterId: row.semester_id,
     courseCode: row.course_code,
     courseTitle: row.course_title,
     session: row.session_name,
     semester: row.semester_name,
     capacity: row.max_capacity,
     registered: row.registered_students,
-    status: row.status === "open" ? "open" : "closed",
+    status,
     lecturer: row.lecturers.join(", ") || "—",
+    lecturerIds: row.lecturer_ids ?? [],
   };
 }
 

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import { StatusBadge } from "@/components/shared/status-badge";
 import { RegistrationActions } from "@/features/student/components/registration-actions";
+import { RegistrationStatusBadge } from "@/features/student/components/registration-status-badge";
 import { formatGradePoint, formatScore } from "@/lib/format/academic";
 import type { AvailableOfferingRow, StudentResultRow } from "@/types/academic";
 
@@ -53,7 +54,11 @@ export function RegistrationOfferingCard({
           }
         />
         <Detail
-          label="Offering"
+          label="Your status"
+          value={<RegistrationStatusBadge offering={offering} />}
+        />
+        <Detail
+          label="Offering status"
           value={
             <StatusBadge
               label={offering.status === "open" ? "Open" : "Closed"}

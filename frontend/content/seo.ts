@@ -46,11 +46,29 @@ export const pageSeo = {
         "Configure course offerings per session and semester, including capacity and lecturer assignment.",
       path: "/admin/offerings",
     },
+    academic: {
+      title: "Academic Setup",
+      description:
+        "Configure academic sessions and semesters used when publishing course offerings.",
+      path: "/admin/academic",
+    },
     auditLogs: {
       title: "Audit Logs",
       description:
         "Review audit entries for result changes, registration actions, and admin updates.",
       path: "/admin/audit-logs",
+    },
+    results: {
+      title: "Result Oversight",
+      description:
+        "Review registered students and enter or correct CA and exam scores for any offering.",
+      path: "/admin/results",
+    },
+    gradeScale: {
+      title: "Grade Scale",
+      description:
+        "Read-only 4.0 grading table used when computing grades from total scores.",
+      path: "/admin/grade-scale",
     },
   },
   lecturer: {
@@ -82,7 +100,7 @@ export const pageSeo = {
     registration: {
       title: "Course Registration",
       description:
-        "Register for available course offerings in the active session and semester.",
+        "Browse open course offerings, register for the current semester, or drop courses without published results.",
       path: "/student/registration",
     },
     results: {

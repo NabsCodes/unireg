@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql://unireg:unireg@localhost:5432/unireg"
     backend_cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
     jwt_secret_key: str = "change-me-before-demo"
+    default_user_password: str = "demo1234"
 
     @cached_property
     def cors_origins(self) -> list[str]:

@@ -1,5 +1,7 @@
 from typing import Any
 
+from app.core.config import settings
+from app.core.security import hash_password
 from app.db.pool import get_connection
 from app.services.query import execute_one, fetch_all, fetch_one
 
@@ -42,7 +44,13 @@ def list_departments() -> list[dict]:
             CASE
                 WHEN l.lecturer_id IS NULL THEN NULL
                 ELSE l.title || ' ' || l.first_name || ' ' || l.last_name
-            END AS hod_name
+            END AS hod_name,
+            (
+                SELECT count(*)
+                FROM student s
+                WHERE s.dept_id = d.dept_id
+                  AND s.status = 'active'
+            ) AS student_count
         FROM department d
         LEFT JOIN lecturer l ON l.lecturer_id = d.hod_id
         ORDER BY d.dept_name
@@ -73,7 +81,13 @@ def update_department(dept_id: int, payload: dict) -> dict | None:
             CASE
                 WHEN l.lecturer_id IS NULL THEN NULL
                 ELSE l.title || ' ' || l.first_name || ' ' || l.last_name
-            END AS hod_name
+            END AS hod_name,
+            (
+                SELECT count(*)
+                FROM student s
+                WHERE s.dept_id = d.dept_id
+                  AND s.status = 'active'
+            ) AS student_count
         FROM department d
         LEFT JOIN lecturer l ON l.lecturer_id = d.hod_id
         WHERE d.dept_id = %s
@@ -103,31 +117,55 @@ def list_students() -> list[dict]:
 
 
 def create_student(payload: dict) -> dict | None:
-    row = execute_one(
-        """
-        INSERT INTO student (
-            matric_no,
-            first_name,
-            last_name,
-            email,
-            level,
-            dept_id,
-            status
-        )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        RETURNING student_id
-        """,
-        (
-            payload["matric_no"],
-            payload["first_name"],
-            payload["last_name"],
-            payload["email"],
-            payload["level"],
-            payload["dept_id"],
-            payload.get("status", "active"),
-        ),
-    )
-    return get_student(row["student_id"]) if row else None
+    password_hash = hash_password(settings.default_user_password)
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO student (
+                    matric_no,
+                    first_name,
+                    last_name,
+                    email,
+                    level,
+                    dept_id,
+                    status
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING student_id
+                """,
+                (
+                    payload["matric_no"],
+                    payload["first_name"],
+                    payload["last_name"],
+                    payload["email"],
+                    payload["level"],
+                    payload["dept_id"],
+                    payload.get("status", "active"),
+                ),
+            )
+            row = cursor.fetchone()
+            if row is None:
+                connection.commit()
+                return None
+
+            student_id = row["student_id"]
+            cursor.execute(
+                """
+                INSERT INTO user_account (
+                    email,
+                    password_hash,
+                    role,
+                    student_id,
+                    lecturer_id
+                )
+                VALUES (%s, %s, 'student', %s, NULL)
+                """,
+                (payload["email"], password_hash, student_id),
+            )
+            connection.commit()
+
+    return get_student(student_id)
 
 
 def get_student(student_id: int) -> dict | None:
@@ -153,6 +191,15 @@ def get_student(student_id: int) -> dict | None:
 
 def update_student(student_id: int, payload: dict) -> dict | None:
     _update_row("student", "student_id", student_id, payload)
+    if payload.get("email") is not None:
+        execute_one(
+            """
+            UPDATE user_account
+            SET email = %s, updated_at = now()
+            WHERE student_id = %s
+            """,
+            (payload["email"], student_id),
+        )
     return get_student(student_id)
 
 
@@ -176,22 +223,53 @@ def list_lecturers() -> list[dict]:
 
 
 def create_lecturer(payload: dict) -> dict | None:
-    row = execute_one(
-        """
-        INSERT INTO lecturer (staff_no, first_name, last_name, email, title, dept_id)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        RETURNING lecturer_id
-        """,
-        (
-            payload["staff_no"],
-            payload["first_name"],
-            payload["last_name"],
-            payload["email"],
-            payload["title"],
-            payload["dept_id"],
-        ),
-    )
-    return get_lecturer(row["lecturer_id"]) if row else None
+    password_hash = hash_password(settings.default_user_password)
+    with get_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                INSERT INTO lecturer (
+                    staff_no,
+                    first_name,
+                    last_name,
+                    email,
+                    title,
+                    dept_id
+                )
+                VALUES (%s, %s, %s, %s, %s, %s)
+                RETURNING lecturer_id
+                """,
+                (
+                    payload["staff_no"],
+                    payload["first_name"],
+                    payload["last_name"],
+                    payload["email"],
+                    payload["title"],
+                    payload["dept_id"],
+                ),
+            )
+            row = cursor.fetchone()
+            if row is None:
+                connection.commit()
+                return None
+
+            lecturer_id = row["lecturer_id"]
+            cursor.execute(
+                """
+                INSERT INTO user_account (
+                    email,
+                    password_hash,
+                    role,
+                    student_id,
+                    lecturer_id
+                )
+                VALUES (%s, %s, 'lecturer', NULL, %s)
+                """,
+                (payload["email"], password_hash, lecturer_id),
+            )
+            connection.commit()
+
+    return get_lecturer(lecturer_id)
 
 
 def get_lecturer(lecturer_id: int) -> dict | None:
@@ -216,6 +294,15 @@ def get_lecturer(lecturer_id: int) -> dict | None:
 
 def update_lecturer(lecturer_id: int, payload: dict) -> dict | None:
     _update_row("lecturer", "lecturer_id", lecturer_id, payload)
+    if payload.get("email") is not None:
+        execute_one(
+            """
+            UPDATE user_account
+            SET email = %s, updated_at = now()
+            WHERE lecturer_id = %s
+            """,
+            (payload["email"], lecturer_id),
+        )
     return get_lecturer(lecturer_id)
 
 
@@ -393,7 +480,12 @@ def list_course_offerings() -> list[dict]:
                     DISTINCT l.title || ' ' || l.first_name || ' ' || l.last_name
                 ) FILTER (WHERE l.lecturer_id IS NOT NULL),
                 '{}'
-            ) AS lecturers
+            ) AS lecturers,
+            coalesce(
+                array_agg(DISTINCT ca.lecturer_id)
+                    FILTER (WHERE ca.lecturer_id IS NOT NULL),
+                '{}'
+            ) AS lecturer_ids
         FROM course_offering co
         JOIN course c ON c.course_id = co.course_id
         JOIN semester sem ON sem.semester_id = co.semester_id
@@ -519,7 +611,12 @@ def get_course_offering(offering_id: int) -> dict | None:
                         DISTINCT l.title || ' ' || l.first_name || ' ' || l.last_name
                     ) FILTER (WHERE l.lecturer_id IS NOT NULL),
                     '{}'
-                ) AS lecturers
+                ) AS lecturers,
+                coalesce(
+                    array_agg(DISTINCT ca.lecturer_id)
+                        FILTER (WHERE ca.lecturer_id IS NOT NULL),
+                    '{}'
+                ) AS lecturer_ids
             FROM course_offering co
             JOIN course c ON c.course_id = co.course_id
             JOIN semester sem ON sem.semester_id = co.semester_id

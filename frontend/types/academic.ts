@@ -3,15 +3,19 @@ export type DepartmentRow = {
   name: string;
   faculty: string;
   headOfDepartment: string;
+  hodId: number | null;
   studentCount: number;
 };
 
 export type StudentRow = {
   id: string;
   matricNo: string;
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   department: string;
+  departmentId: number;
   level: string;
   status: "active" | "graduated" | "suspended";
 };
@@ -19,10 +23,13 @@ export type StudentRow = {
 export type LecturerRow = {
   id: string;
   staffNo: string;
+  firstName: string;
+  lastName: string;
   name: string;
   email: string;
   title: string;
   department: string;
+  departmentId: number;
 };
 
 export type CourseRow = {
@@ -32,18 +39,39 @@ export type CourseRow = {
   creditUnits: number;
   level: string;
   department: string;
+  departmentId: number;
 };
 
 export type OfferingRow = {
   id: string;
+  courseId: number;
+  semesterId: number;
   courseCode: string;
   courseTitle: string;
   session: string;
   semester: string;
   capacity: number;
   registered: number;
-  status: "open" | "closed";
+  status: "open" | "closed" | "archived";
   lecturer: string;
+  lecturerIds: number[];
+};
+
+export type SessionRow = {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+};
+
+export type SemesterRow = {
+  id: string;
+  sessionId: number;
+  sessionName: string;
+  name: string;
+  startDate: string;
+  endDate: string;
 };
 
 export type AuditLogRow = {
@@ -71,6 +99,7 @@ export type StudentResultRow = {
 
 export type LecturerCourseRow = {
   id: string;
+  offeringId: number;
   courseCode: string;
   courseTitle: string;
   session: string;
@@ -100,6 +129,30 @@ export type GradeScaleRow = {
   remark: string;
 };
 
+export type StudentDashboardRegisteredCourse = {
+  id: string;
+  offeringId: number;
+  courseCode: string;
+  courseTitle: string;
+  creditUnits: number;
+  status: string;
+  semester: string;
+};
+
+export type StudentDashboardSummary = {
+  matricNo: string;
+  name: string;
+  email: string;
+  level: string;
+  department: string;
+  session: string;
+  semester: string | null;
+  registeredCount: number;
+  semesterGpa: number | null;
+  cgpa: number | null;
+  registeredCourses: StudentDashboardRegisteredCourse[];
+};
+
 export type AvailableOfferingRow = {
   id: string;
   courseCode: string;
@@ -110,4 +163,7 @@ export type AvailableOfferingRow = {
   registered: number;
   status: "open" | "closed";
   isRegistered: boolean;
+  registrationStatus: string | null;
+  hasResults: boolean;
+  canDrop: boolean;
 };

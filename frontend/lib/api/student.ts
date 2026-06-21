@@ -2,17 +2,56 @@ import { apiDelete, apiGet, apiPost } from "@/lib/api/client";
 import { usesMockData } from "@/lib/api/config";
 import {
   availableOfferings,
+  registeredCourses,
+  studentProfile,
   studentResults,
 } from "@/content/demo-data/student";
 import {
   mapAvailableOfferingRow,
+  mapStudentDashboard,
   mapStudentResultRow,
+  type ApiStudentDashboardSummary,
   type ApiStudentAvailableCourseOffering,
   type ApiStudentResultRow,
   type DropCourseInput,
   type RegisterCourseInput,
 } from "@/types/api";
-import type { AvailableOfferingRow, StudentResultRow } from "@/types/academic";
+import type {
+  AvailableOfferingRow,
+  StudentDashboardSummary,
+  StudentResultRow,
+} from "@/types/academic";
+
+export async function getStudentDashboard(): Promise<StudentDashboardSummary> {
+  if (usesMockData()) {
+    return {
+      matricNo: studentProfile.matricNo,
+      name: studentProfile.name,
+      email: studentProfile.email,
+      level: studentProfile.level,
+      department: studentProfile.department,
+      session: studentProfile.session,
+      semester: studentProfile.semester,
+      registeredCount: studentProfile.registeredCourses,
+      semesterGpa: Number(studentProfile.semesterGpa),
+      cgpa: Number(studentProfile.cgpa),
+      registeredCourses: registeredCourses.map((course) => ({
+        id: course.id,
+        offeringId: Number(course.id),
+        courseCode: course.code,
+        courseTitle: course.title,
+        creditUnits: course.creditUnits,
+        status: course.status,
+        semester: studentProfile.semester,
+      })),
+    };
+  }
+
+  const summary = await apiGet<ApiStudentDashboardSummary>(
+    "/api/students/me/dashboard",
+  );
+  return mapStudentDashboard(summary);
+}
 
 export async function getStudentResults(
   matricNo: string,

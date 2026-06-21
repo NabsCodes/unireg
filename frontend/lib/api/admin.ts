@@ -1,15 +1,5 @@
-import { apiGet } from "@/lib/api/client";
+import { apiGet, apiPost } from "@/lib/api/client";
 import { usesMockData } from "@/lib/api/config";
-import {
-  adminDashboardSummary,
-  adminRecentActivity,
-  auditLogs,
-  courseOfferings,
-  courses,
-  departments,
-  lecturers,
-  students,
-} from "@/content/demo-data/admin";
 import {
   mapAdminCourseRow,
   mapAdminLecturerRow,
@@ -20,6 +10,8 @@ import {
   mapDepartmentRow,
   mapGradeScaleRow,
   mapOfferingRow,
+  mapSemesterRow,
+  mapSessionRow,
   type ApiAuditLogRow,
   type ApiCourseRow,
   type ApiDashboardSummary,
@@ -27,6 +19,8 @@ import {
   type ApiGradeScaleRow,
   type ApiLecturerRow,
   type ApiOfferingRow,
+  type ApiSemesterRow,
+  type ApiSessionRow,
   type ApiStudentRow,
   type DashboardActivityItem,
   type DashboardSummary,
@@ -38,8 +32,32 @@ import type {
   GradeScaleRow,
   LecturerRow,
   OfferingRow,
+  ResultUploadRow,
+  SemesterRow,
+  SessionRow,
   StudentRow,
 } from "@/types/academic";
+import {
+  csc384ResultUploads,
+} from "@/content/demo-data/lecturer";
+import {
+  mapResultRosterRow,
+  type ApiLecturerResultRosterRow,
+  type UploadResultInput,
+} from "@/types/api";
+import {
+  adminDashboardSummary,
+  adminRecentActivity,
+  auditLogs,
+  courseOfferings,
+  courses,
+  departments,
+  gradeScale as adminGradeScale,
+  lecturers,
+  semesters,
+  sessions,
+  students,
+} from "@/content/demo-data/admin";
 
 export async function getAdminDashboardSummary(): Promise<DashboardSummary> {
   if (usesMockData()) {
@@ -127,9 +145,62 @@ export async function getAdminRecentActivity(): Promise<DashboardActivityItem[]>
 
 export async function getAdminGradeScale(): Promise<GradeScaleRow[]> {
   if (usesMockData()) {
-    return [];
+    return adminGradeScale;
   }
 
   const rows = await apiGet<ApiGradeScaleRow[]>("/api/admin/grade-scale");
   return rows.map((row, index) => mapGradeScaleRow(row, index));
+}
+
+export async function getAdminOfferingResults(
+  offeringId: number,
+): Promise<ResultUploadRow[]> {
+  if (usesMockData()) {
+    if (offeringId === 1) {
+      return csc384ResultUploads;
+    }
+
+    return [];
+  }
+
+  const rows = await apiGet<ApiLecturerResultRosterRow[]>(
+    `/api/admin/results?offering_id=${offeringId}`,
+  );
+
+  return rows.map((row, index) => mapResultRosterRow(row, index));
+}
+
+export async function updateAdminResult(
+  input: UploadResultInput,
+): Promise<{ success: true }> {
+  if (usesMockData()) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { success: true };
+  }
+
+  await apiPost("/api/admin/results", {
+    reg_id: input.regId,
+    ca_score: input.caScore,
+    exam_score: input.examScore,
+  });
+
+  return { success: true };
+}
+
+export async function getAdminSessions(): Promise<SessionRow[]> {
+  if (usesMockData()) {
+    return sessions;
+  }
+
+  const rows = await apiGet<ApiSessionRow[]>("/api/admin/sessions");
+  return rows.map((row, index) => mapSessionRow(row, index));
+}
+
+export async function getAdminSemesters(): Promise<SemesterRow[]> {
+  if (usesMockData()) {
+    return semesters;
+  }
+
+  const rows = await apiGet<ApiSemesterRow[]>("/api/admin/semesters");
+  return rows.map((row, index) => mapSemesterRow(row, index));
 }

@@ -17,6 +17,10 @@ JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8
 
 
+def hash_password(plain_password: str) -> str:
+    return pbkdf2_sha256.hash(plain_password)
+
+
 def verify_password(plain_password: str, password_hash: str) -> bool:
     return pbkdf2_sha256.verify(plain_password, password_hash)
 

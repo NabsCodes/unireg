@@ -13,6 +13,11 @@ class DashboardSummary(BaseModel):
     current_session: str | None
 
 
+class CurrentAcademicPeriod(BaseModel):
+    session_name: str
+    semester_name: str
+
+
 class AvailableCourseOffering(BaseModel):
     offering_id: int
     course_code: str
@@ -28,6 +33,8 @@ class AvailableCourseOffering(BaseModel):
 class StudentAvailableCourseOffering(AvailableCourseOffering):
     is_registered: bool
     registration_status: str | None = None
+    has_results: bool = False
+    can_drop: bool = False
 
 
 class StudentResultRow(BaseModel):
@@ -49,6 +56,7 @@ class StudentResultRow(BaseModel):
 
 
 class LecturerCourseRow(BaseModel):
+    offering_id: int
     staff_no: str
     lecturer_name: str
     course_code: str
@@ -57,6 +65,30 @@ class LecturerCourseRow(BaseModel):
     session_name: str
     registered_students: int
     results_uploaded: int
+
+
+class StudentDashboardRegisteredCourse(BaseModel):
+    reg_id: int
+    offering_id: int
+    course_code: str
+    course_title: str
+    credit_units: int
+    status: str
+    semester_name: str
+
+
+class StudentDashboardSummary(BaseModel):
+    matric_no: str
+    student_name: str
+    email: str
+    level: str
+    dept_name: str
+    session_name: str
+    semester_name: str | None = None
+    registered_count: int
+    semester_gpa: Decimal | None = None
+    cgpa: Decimal | None = None
+    registered_courses: list[StudentDashboardRegisteredCourse]
 
 
 class CourseRegistrationRequest(BaseModel):

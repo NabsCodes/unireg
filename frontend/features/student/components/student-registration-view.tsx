@@ -6,16 +6,19 @@ import { useMemo } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
+import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { studentProfile } from "@/content/demo-data/student";
 import { currentAcademicPeriod, portalUsers } from "@/content/portal";
 import { semesterFilter } from "@/content/table-filters";
 import { useStudentRegistrationOfferings } from "@/features/student/api/use-student-registration";
 import { RegistrationActions } from "@/features/student/components/registration-actions";
+import { RegistrationStatusBadge } from "@/features/student/components/registration-status-badge";
 import { RegistrationOfferingCard } from "@/features/student/components/student-list-cards";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import { usePortalUser, useStudentScope } from "@/hooks/use-portal-user";
 import { ALL_FILTER_VALUE } from "@/lib/data-table/column-filters";
+import { getRegistrationDisplayState } from "@/lib/academic/registration-state";
 import type { AvailableOfferingRow } from "@/types/academic";
 
 export function StudentRegistrationView() {
@@ -42,7 +45,15 @@ export function StudentRegistrationView() {
       {
         id: "isRegistered",
         accessorFn: (row) => String(row.isRegistered),
-        header: "Registration state",
+        header: "Registered filter",
+      },
+      {
+        id: "registrationState",
+        header: "Your status",
+        accessorFn: (row) => getRegistrationDisplayState(row),
+        cell: ({ row }) => (
+          <RegistrationStatusBadge offering={row.original} />
+        ),
       },
       {
         accessorKey: "creditUnits",
@@ -66,7 +77,7 @@ export function StudentRegistrationView() {
       },
       {
         accessorKey: "status",
-        header: "Offering",
+        header: "Offering status",
         cell: ({ row }) => {
           const status = row.getValue("status") as AvailableOfferingRow["status"];
           return (
@@ -100,7 +111,7 @@ export function StudentRegistrationView() {
         },
         {
           value: "true",
-          label: "Registered",
+          label: "My courses",
           count: data.filter((offering) => offering.isRegistered).length,
         },
         {
@@ -117,8 +128,29 @@ export function StudentRegistrationView() {
     <PortalPage>
       <PageHeader
         title="Course Registration"
-        description={`${user.name} (${user.identifier ?? matricNo}) · ${currentAcademicPeriod.label}`}
+        description={`${user.name} (${user.identifier ?? matricNo}) · Browse open offerings, register for courses, or manage your current registrations for ${currentAcademicPeriod.label}.`}
       />
+
+      {!isLoading && data.length > 0 ? (
+        <section className="grid gap-4 sm:grid-cols-3">
+          <StatCard
+            label="Open offerings"
+            value={String(data.length)}
+            helper="Available this session"
+          />
+          <StatCard
+            label="My courses"
+            value={String(data.filter((offering) => offering.isRegistered).length)}
+            helper="Currently registered"
+          />
+          <StatCard
+            label="Available to register"
+            value={String(data.filter((offering) => !offering.isRegistered).length)}
+            helper="Not registered yet"
+          />
+        </section>
+      ) : null}
+
       <QueryState
         error={error}
         errorLabel="Could not load course offerings."

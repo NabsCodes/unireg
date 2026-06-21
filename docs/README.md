@@ -36,7 +36,7 @@ The docs should keep the project easy to continue across Nabeel, Batul, Claude, 
 | `database/schema-plan.md` | Table-by-table schema plan before writing SQL. |
 | `database/sql-features-checklist.md` | Required database concepts and how UniReg will demonstrate them. |
 | `features/` | Role and module specs for admin, student, lecturer, registration, and transcripts. |
-| `delivery/` | Demo script, presentation outline, and report outline. |
+| `delivery/` | **Start here for presentation prep** — defense guide, cheat sheet, demo script, PPT and report outlines. See `delivery/README.md`. |
 
 ## Source Of Truth Order
 
@@ -47,3 +47,10 @@ The docs should keep the project easy to continue across Nabeel, Batul, Claude, 
 5. App implementation once the stack is confirmed
 
 If these disagree, update the docs before writing code.
+
+## Runtime Data Source
+
+- **Primary:** PostgreSQL → FastAPI → Next.js (`NEXT_PUBLIC_DATA_SOURCE=api`)
+- **Fallback:** `frontend/content/demo-data/` when mock mode is enabled (offline UI only)
+
+See root `README.md` for env setup and demo credentials.

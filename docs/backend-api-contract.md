@@ -53,6 +53,8 @@ Authorization: Bearer <token>
 | `GET` | `/api/admin/offerings` | List course offerings and assigned lecturers |
 | `POST` | `/api/admin/offerings` | Offer a course for a semester and assign lecturers |
 | `PATCH` | `/api/admin/offerings/{offering_id}` | Edit capacity/status/lecturer assignments |
+| `GET` | `/api/admin/results?offering_id=1` | Result roster for an offering (admin oversight) |
+| `POST` | `/api/admin/results` | Enter or update CA/exam scores (registry override) |
 | `GET` | `/api/admin/grade-scale` | Show 4.0 grading table |
 | `GET` | `/api/admin/audit-logs` | Review result insert/update audit logs |
 
@@ -60,6 +62,7 @@ Authorization: Bearer <token>
 
 | Method | Route | Purpose |
 | --- | --- | --- |
+| `GET` | `/api/students/me/dashboard` | Current student's session summary, registrations, GPA/CGPA |
 | `GET` | `/api/students/me/course-offerings` | List current open offerings with registration state |
 | `POST` | `/api/students/me/registrations` | Register current student for an offering |
 | `DELETE` | `/api/students/me/registrations/{offering_id}` | Drop a registration before result upload |
@@ -102,6 +105,7 @@ Authorization: Bearer <token>
 - Offerings: table plus create/edit dialog for course, semester, capacity,
   status, assigned lecturers.
 - Grade Scale: read-only table showing the 4.0 system.
+- Result Oversight: choose offering, view roster, enter or edit CA/exam scores.
 - Audit Logs: read-only table showing result insert/update changes.
 
 ### Student
@@ -132,3 +136,19 @@ These are normal ERP modules but outside this capstone's useful scope:
 
 They can be mentioned as future work, but they should not distract from the
 database concepts being graded.
+
+## Frontend Wiring Status
+
+With `NEXT_PUBLIC_DATA_SOURCE=api`, these screens read **live PostgreSQL data** through FastAPI:
+
+| Area | Live API | Notes |
+| --- | --- | --- |
+| Login + JWT session | Yes | Routes by role after `POST /api/auth/login` |
+| Admin dashboard, lists, CRUD dialogs | Yes | Includes sessions/semesters create, offerings edit |
+| Admin audit logs | Yes | Actor names joined in backend |
+| Student registration (register/drop) | Yes | Confirm dialogs + SQL-owned rules |
+| Student results + transcript | Yes | Includes export/print UI |
+| Lecturer courses + result upload | Yes | Offering selector + CA/exam upload |
+| Student dashboard | Yes | Live summary via `GET /api/students/me/dashboard` |
+
+Mock mode (`DATA_SOURCE` not `api`) still serves `content/demo-data/` through the same `lib/api/` functions for offline UI work.

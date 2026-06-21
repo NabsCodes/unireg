@@ -67,4 +67,16 @@ the real access-control layer for the database course deliverable.
 
 ## Design Principle
 
-The database owns academic truth. The app should call into the database and display results, but GPA, transcript, constraints, and audit behavior should be demonstrable through SQL.
+The database owns academic truth. The app calls FastAPI, which executes SQL against PostgreSQL, and displays the results. GPA, transcript, constraints, and audit behavior must remain demonstrable through raw SQL files even when the portal is running live.
+
+## Data Flow (Live Mode)
+
+```text
+PostgreSQL (schema, seed, views, functions, triggers)
+    ↓ raw SQL in backend services
+FastAPI (/api/*, JWT auth)
+    ↓ fetch + Bearer token
+Next.js (lib/api → TanStack Query → portal views)
+```
+
+Set `NEXT_PUBLIC_DATA_SOURCE=api` in `frontend/.env.local` for demo and daily development. Mock rows in `frontend/content/demo-data/` are used only when the API is not selected.

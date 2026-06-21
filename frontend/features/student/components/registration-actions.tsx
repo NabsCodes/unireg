@@ -5,13 +5,16 @@ import { useState } from "react";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { FeedbackDialog } from "@/components/shared/feedback-dialog";
-import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   useDropCourse,
   useRegisterCourse,
 } from "@/features/student/api/use-student-registration";
+import { RegistrationStatusBadge } from "@/features/student/components/registration-status-badge";
 import { ApiError } from "@/lib/api/client";
+import {
+  getRegistrationDisplayState,
+} from "@/lib/academic/registration-state";
 import type { AvailableOfferingRow } from "@/types/academic";
 
 type PendingAction = "register" | "drop" | null;
@@ -30,7 +33,11 @@ function registrationErrorMessage(
     const message = error.message.toLowerCase();
 
     if (action === "drop" && error.status === 400) {
-      return "This course cannot be dropped because results have already been uploaded, or the registration is no longer active.";
+      if (message.includes("result")) {
+        return "This course cannot be dropped because results have already been uploaded.";
+      }
+
+      return "This registration is no longer active. Refresh the page to see the latest status.";
     }
 
     if (action === "register") {
@@ -73,6 +80,8 @@ export function RegistrationActions({
 
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [feedback, setFeedback] = useState<FeedbackState>(null);
+
+  const displayState = getRegistrationDisplayState(offering);
 
   const isRegistering =
     registerMutation.isPending &&
@@ -124,48 +133,76 @@ export function RegistrationActions({
     }
   }
 
-  const actionButtons = offering.isRegistered ? (
-    <div
-      className={
-        layout === "card"
-          ? "flex flex-col items-end gap-2"
-          : "flex flex-wrap items-center gap-2"
-      }
-    >
-      <StatusBadge label="Registered" tone="active" />
-      <Button
-        disabled={isBusy}
-        onClick={() => setPendingAction("drop")}
-        size="sm"
-        variant="outline"
+  const actionButtons = (() => {
+    if (displayState === "results-published") {
+      return (
+        <RegistrationStatusBadge
+          offering={offering}
+          showHelper={layout === "card"}
+        />
+      );
+    }
+
+    if (displayState === "registered") {
+      return (
+        <div
+          className={
+            layout === "card"
+              ? "flex flex-col items-end gap-2"
+              : "flex flex-wrap items-center gap-2"
+          }
+        >
+          <RegistrationStatusBadge offering={offering} />
+          <Button
+            disabled={isBusy}
+            onClick={() => setPendingAction("drop")}
+            size="sm"
+            variant="outline"
+          >
+            {isDropping ? (
+              <>
+                <Loader2 className="animate-spin" />
+                Dropping
+              </>
+            ) : (
+              "Drop"
+            )}
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div
+        className={
+          layout === "card"
+            ? "flex flex-col items-end gap-2"
+            : "flex flex-wrap items-center gap-2"
+        }
       >
-        {isDropping ? (
-          <>
-            <Loader2 className="animate-spin" />
-            Dropping
-          </>
-        ) : (
-          "Drop"
-        )}
-      </Button>
-    </div>
-  ) : (
-    <Button
-      disabled={isBusy || offering.status !== "open"}
-      onClick={() => setPendingAction("register")}
-      size="sm"
-      variant="outline"
-    >
-      {isRegistering ? (
-        <>
-          <Loader2 className="animate-spin" />
-          Registering
-        </>
-      ) : (
-        "Register"
-      )}
-    </Button>
-  );
+        {displayState === "dropped" ? (
+          <RegistrationStatusBadge offering={offering} />
+        ) : null}
+        <Button
+          disabled={isBusy || offering.status !== "open"}
+          onClick={() => setPendingAction("register")}
+          size="sm"
+          variant="outline"
+        >
+          {isRegistering ? (
+            <>
+              <Loader2 className="animate-spin" />
+              Registering
+            </>
+          ) : displayState === "dropped" ? (
+            "Register again"
+          ) : (
+            "Register"
+          )}
+        </Button>
+      </div>
+    );
+  })();
 
   return (
     <>

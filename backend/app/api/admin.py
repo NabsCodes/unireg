@@ -1,9 +1,15 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from psycopg import Error as PsycopgError
 
 from app.core.security import require_roles
-from app.schemas.academic import DashboardSummary
+from app.schemas.academic import (
+    DashboardSummary,
+    LecturerResultRosterRow,
+    ResultUploadRequest,
+    ResultUploadResponse,
+)
 from app.schemas.admin import (
     AcademicSessionCreate,
     AcademicSessionRow,
@@ -29,7 +35,11 @@ from app.schemas.admin import (
 )
 from app.schemas.auth import AuthUser
 from app.services import admin as admin_service
-from app.services.academic import get_dashboard_summary
+from app.services.academic import (
+    get_dashboard_summary,
+    list_offering_result_roster,
+    upload_result_for_admin,
+)
 
 router = APIRouter()
 AdminUser = Annotated[AuthUser, Depends(require_roles("admin"))]
@@ -211,6 +221,34 @@ def update_course_offering(
 @router.get("/audit-logs", response_model=list[AuditLogRow])
 def audit_logs(_: AdminUser) -> list[dict]:
     return admin_service.list_audit_logs()
+
+
+@router.get("/results", response_model=list[LecturerResultRosterRow])
+def offering_results(
+    _: AdminUser,
+    offering_id: int = Query(..., gt=0),
+) -> list[dict]:
+    return list_offering_result_roster(offering_id)
+
+
+@router.post("/results", response_model=ResultUploadResponse)
+def update_offering_result(payload: ResultUploadRequest, user: AdminUser) -> dict:
+    try:
+        row = upload_result_for_admin(
+            payload.reg_id,
+            payload.ca_score,
+            payload.exam_score,
+            user.user_id,
+        )
+    except PsycopgError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc).splitlines()[0],
+        ) from exc
+
+    if row is None:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    return row
 
 
 @router.get("/grade-scale", response_model=list[GradeScaleRow])

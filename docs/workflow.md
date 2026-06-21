@@ -15,12 +15,23 @@ UniReg should be built database-first. The frontend exists to demonstrate the da
 
 ## Current Stack Rule
 
-The app stack is intentionally not locked yet.
+The stack is confirmed:
 
-- If backend tools are flexible: use Next.js, PostgreSQL, and raw SQL through a database driver.
-- If backend tools must follow the brief strictly: use a Next.js frontend, Python backend, PostgreSQL, and raw SQL.
+- Frontend: Next.js, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query
+- Backend: Python FastAPI (JWT auth, role guards, raw SQL via `psycopg`)
+- Database: PostgreSQL with raw SQL deliverables under `database/`
 
-Do not scaffold the application until Batul confirms whether the suggested backend tools are flexible.
+Do not use Next.js API routes as the main backend. Do not use an ORM as the schema source of truth.
+
+## Live Data Rule
+
+The application demo runs against **seeded PostgreSQL data** through FastAPI.
+
+- Load SQL files in order (`database/README.md`).
+- Run backend + frontend with `NEXT_PUBLIC_DATA_SOURCE=api` (see root `README.md`).
+- Academic behavior (registration rules, grades, GPA, audit) must remain demonstrable in SQL even when the UI calls the API.
+
+`frontend/content/demo-data/` is a **mock fallback only** when the API is unavailable or `DATA_SOURCE` is not `api`. Do not treat demo-data as the primary source of truth and do not wire new screens to import it directly — read through `frontend/lib/api/` instead.
 
 ## Database Rule
 

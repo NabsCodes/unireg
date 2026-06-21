@@ -2,19 +2,25 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { getLecturerCourseResults, uploadResult } from "@/lib/api/lecturer";
+import {
+  getLecturerOfferingResults,
+  uploadResult,
+} from "@/lib/api/lecturer";
 import { queryKeys } from "@/lib/api/query-keys";
 import type { UploadResultInput } from "@/types/api";
 
-export function useLecturerCourseResults(staffNo: string, courseCode: string) {
+export function useLecturerOfferingResults(
+  staffNo: string,
+  offeringId: number | null,
+) {
   return useQuery({
-    queryKey: queryKeys.lecturer.results(staffNo, courseCode),
-    queryFn: () => getLecturerCourseResults(staffNo, courseCode),
-    enabled: Boolean(staffNo && courseCode),
+    queryKey: queryKeys.lecturer.results(staffNo, offeringId ?? 0),
+    queryFn: () => getLecturerOfferingResults(staffNo, offeringId!),
+    enabled: Boolean(staffNo && offeringId),
   });
 }
 
-export function useUploadResult(staffNo: string, courseCode = "CSC384") {
+export function useUploadResult(staffNo: string, offeringId: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -24,7 +30,7 @@ export function useUploadResult(staffNo: string, courseCode = "CSC384") {
         queryKey: queryKeys.lecturer.root(staffNo),
       });
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.lecturer.results(staffNo, courseCode),
+        queryKey: queryKeys.lecturer.results(staffNo, offeringId),
       });
     },
   });

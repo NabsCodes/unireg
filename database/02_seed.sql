@@ -273,6 +273,14 @@ JOIN course c ON c.course_id = co.course_id
 WHERE s.matric_no IN ('A00025332', 'A00024575')
   AND c.course_code IN ('CSC384', 'CSC302', 'MTH201');
 
+INSERT INTO course_registration (student_id, offering_id, reg_date, status)
+SELECT s.student_id, co.offering_id, DATE '2025-09-12', 'registered'
+FROM student s
+CROSS JOIN course_offering co
+JOIN course c ON c.course_id = co.course_id
+WHERE s.matric_no = 'A00024901'
+  AND c.course_code = 'CSC384';
+
 INSERT INTO result (
     reg_id,
     ca_score,

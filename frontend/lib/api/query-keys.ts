@@ -9,7 +9,11 @@ export const queryKeys = {
     offerings: () => [...queryKeys.admin.all, "offerings"] as const,
     auditLogs: () => [...queryKeys.admin.all, "audit-logs"] as const,
     recentActivity: () => [...queryKeys.admin.all, "recent-activity"] as const,
+    results: (offeringId: number) =>
+      [...queryKeys.admin.all, "results", offeringId] as const,
     gradeScale: () => [...queryKeys.admin.all, "grade-scale"] as const,
+    sessions: () => [...queryKeys.admin.all, "sessions"] as const,
+    semesters: () => [...queryKeys.admin.all, "semesters"] as const,
   },
   academic: {
     all: ["academic"] as const,
@@ -24,13 +28,14 @@ export const queryKeys = {
       [...queryKeys.student.root(matricNo), "transcript"] as const,
     registration: (matricNo: string) =>
       [...queryKeys.student.root(matricNo), "registration"] as const,
+    dashboard: () => [...queryKeys.student.all, "dashboard"] as const,
   },
   lecturer: {
     all: ["lecturer"] as const,
     root: (staffNo: string) => [...queryKeys.lecturer.all, staffNo] as const,
     courses: (staffNo: string) =>
       [...queryKeys.lecturer.root(staffNo), "courses"] as const,
-    results: (staffNo: string, courseCode: string) =>
-      [...queryKeys.lecturer.root(staffNo), "results", courseCode] as const,
+    results: (staffNo: string, offeringId: number) =>
+      [...queryKeys.lecturer.root(staffNo), "results", offeringId] as const,
   },
 } as const;

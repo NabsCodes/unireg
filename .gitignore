@@ -30,3 +30,6 @@ build/
 *.sqlite3
 *.dump
 tmp/
+
+# Cursor local IDE config (rules live in workspace; not part of deliverable)
+.cursor/

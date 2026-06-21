@@ -23,6 +23,7 @@ class DepartmentRow(BaseModel):
     faculty: str
     hod_id: int | None = None
     hod_name: str | None = None
+    student_count: int = 0
 
 
 class StudentCreate(BaseModel):
@@ -166,6 +167,7 @@ class CourseOfferingRow(BaseModel):
     status: str
     registered_students: int
     lecturers: list[str]
+    lecturer_ids: list[int] = []
 
 
 class AuditLogRow(BaseModel):

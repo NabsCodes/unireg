@@ -10,12 +10,61 @@ export const lecturerProfile = {
 export const lecturerAssignedCourses: LecturerCourseRow[] = [
   {
     id: "1",
+    offeringId: 1,
     courseCode: "CSC384",
     courseTitle: "Database Systems",
     session: "2025/2026",
     semester: "First Semester",
+    registeredStudents: 3,
+    resultsUploaded: 2,
+  },
+];
+
+export const musaAssignedCourses: LecturerCourseRow[] = [
+  {
+    id: "1",
+    offeringId: 2,
+    courseCode: "CSC302",
+    courseTitle: "Operating Systems",
+    session: "2025/2026",
+    semester: "First Semester",
     registeredStudents: 2,
     resultsUploaded: 2,
+  },
+  {
+    id: "2",
+    offeringId: 3,
+    courseCode: "MTH201",
+    courseTitle: "Numerical Methods",
+    session: "2025/2026",
+    semester: "First Semester",
+    registeredStudents: 2,
+    resultsUploaded: 0,
+  },
+];
+
+export const mth201ResultUploads: ResultUploadRow[] = [
+  {
+    id: "1",
+    regId: 5,
+    matricNo: "A00025332",
+    studentName: "Batul Hassan",
+    caScore: null,
+    examScore: null,
+    totalScore: null,
+    grade: null,
+    status: "Pending",
+  },
+  {
+    id: "2",
+    regId: 6,
+    matricNo: "A00024575",
+    studentName: "Simtong Tongnan",
+    caScore: null,
+    examScore: null,
+    totalScore: null,
+    grade: null,
+    status: "Pending",
   },
 ];
 
@@ -41,5 +90,16 @@ export const csc384ResultUploads: ResultUploadRow[] = [
     totalScore: 82,
     grade: "B",
     status: "Uploaded",
+  },
+  {
+    id: "3",
+    regId: 3,
+    matricNo: "A00024901",
+    studentName: "Maryam Bello",
+    caScore: null,
+    examScore: null,
+    totalScore: null,
+    grade: null,
+    status: "Pending",
   },
 ];

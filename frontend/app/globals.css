@@ -124,4 +124,7 @@ a {
   html {
     @apply font-sans;
   }
+  a[data-slot="button"][data-variant="default"] {
+    color: var(--primary-foreground);
+  }
 }

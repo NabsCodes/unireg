@@ -1,8 +1,132 @@
 from app.services.query import execute_one, fetch_all, fetch_one
 
+_FOCUS_SEMESTER_SQL = """
+    WITH current_session AS (
+        SELECT session_id, session_name
+        FROM academic_session
+        WHERE is_current = true
+        LIMIT 1
+    )
+    SELECT
+        cs.session_id,
+        cs.session_name,
+        sem.semester_id,
+        sem.semester_name
+    FROM current_session cs
+    JOIN semester sem ON sem.session_id = cs.session_id
+    ORDER BY
+        (CURRENT_DATE BETWEEN sem.start_date AND sem.end_date) DESC,
+        (
+            SELECT count(*)
+            FROM course_offering co
+            WHERE co.semester_id = sem.semester_id
+              AND co.status = 'open'
+        ) DESC,
+        sem.start_date ASC
+    LIMIT 1
+"""
+
+
+def get_current_academic_period() -> dict | None:
+    row = fetch_one(_FOCUS_SEMESTER_SQL)
+    if row is None:
+        return None
+    return {
+        "session_name": row["session_name"],
+        "semester_name": row["semester_name"],
+    }
+
 
 def get_dashboard_summary() -> dict | None:
     return fetch_one("SELECT * FROM admin_dashboard_summary_view")
+
+
+def get_student_dashboard(student_id: int) -> dict | None:
+    focus = fetch_one(_FOCUS_SEMESTER_SQL)
+    if focus is None:
+        return None
+
+    profile = fetch_one(
+        """
+        SELECT
+            s.matric_no,
+            s.first_name || ' ' || s.last_name AS student_name,
+            s.email,
+            s.level,
+            d.dept_name,
+            %s AS session_name,
+            %s AS semester_name
+        FROM student s
+        JOIN department d ON d.dept_id = s.dept_id
+        WHERE s.student_id = %s
+        """,
+        (
+            focus["session_name"],
+            focus["semester_name"],
+            student_id,
+        ),
+    )
+    if profile is None:
+        return None
+
+    registered_courses = fetch_all(
+        """
+        SELECT
+            cr.reg_id,
+            co.offering_id,
+            c.course_code,
+            c.course_title,
+            c.credit_units,
+            cr.status,
+            sem.semester_name
+        FROM course_registration cr
+        JOIN course_offering co ON co.offering_id = cr.offering_id
+        JOIN course c ON c.course_id = co.course_id
+        JOIN semester sem ON sem.semester_id = co.semester_id
+        WHERE cr.student_id = %s
+          AND sem.semester_id = %s
+          AND cr.status = 'registered'
+        ORDER BY c.course_code
+        """,
+        (student_id, focus["semester_id"]),
+    )
+
+    gpa_row = fetch_one(
+        """
+        SELECT semester_gpa, cgpa
+        FROM student_transcript_view
+        WHERE matric_no = %s
+          AND session_name = %s
+          AND semester_name = %s
+        LIMIT 1
+        """,
+        (
+            profile["matric_no"],
+            focus["session_name"],
+            focus["semester_name"],
+        ),
+    )
+    if gpa_row is None or gpa_row.get("cgpa") is None:
+        cgpa_row = fetch_one(
+            """
+            SELECT cgpa
+            FROM student_transcript_view
+            WHERE matric_no = %s
+              AND cgpa IS NOT NULL
+            LIMIT 1
+            """,
+            (profile["matric_no"],),
+        )
+    else:
+        cgpa_row = gpa_row
+
+    return {
+        **profile,
+        "registered_courses": registered_courses,
+        "registered_count": len(registered_courses),
+        "semester_gpa": gpa_row["semester_gpa"] if gpa_row else None,
+        "cgpa": cgpa_row["cgpa"] if cgpa_row else None,
+    }
 
 
 def list_available_course_offerings() -> list[dict]:
@@ -57,7 +181,20 @@ def list_available_course_offerings_for_student(student_id: int) -> list[dict]:
                 AS registered_students,
             (cr_student.reg_id IS NOT NULL AND cr_student.status = 'registered')
                 AS is_registered,
-            cr_student.status AS registration_status
+            cr_student.status AS registration_status,
+            EXISTS (
+                SELECT 1
+                FROM result r
+                WHERE r.reg_id = cr_student.reg_id
+            ) AS has_results,
+            (
+                cr_student.status = 'registered'
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM result r
+                    WHERE r.reg_id = cr_student.reg_id
+                )
+            ) AS can_drop
         FROM course_offering co
         JOIN course c ON c.course_id = co.course_id
         JOIN semester sem ON sem.semester_id = co.semester_id
@@ -165,6 +302,7 @@ def list_lecturer_courses(staff_no: str) -> list[dict]:
     return fetch_all(
         """
         SELECT
+            co.offering_id,
             l.staff_no,
             l.title || ' ' || l.first_name || ' ' || l.last_name
                 AS lecturer_name,
@@ -187,6 +325,7 @@ def list_lecturer_courses(staff_no: str) -> list[dict]:
         LEFT JOIN result r ON r.reg_id = cr.reg_id
         WHERE l.staff_no = %s
         GROUP BY
+            co.offering_id,
             l.staff_no,
             l.title,
             l.first_name,
@@ -238,7 +377,7 @@ def lecturer_owns_offering(lecturer_id: int, offering_id: int) -> bool:
     return row is not None
 
 
-def list_result_roster(lecturer_id: int, offering_id: int) -> list[dict]:
+def list_offering_result_roster(offering_id: int) -> list[dict]:
     return fetch_all(
         """
         SELECT
@@ -258,18 +397,22 @@ def list_result_roster(lecturer_id: int, offering_id: int) -> list[dict]:
         JOIN student s ON s.student_id = cr.student_id
         JOIN course_offering co ON co.offering_id = cr.offering_id
         JOIN course c ON c.course_id = co.course_id
-        JOIN course_assignment ca ON ca.offering_id = co.offering_id
         LEFT JOIN result r ON r.reg_id = cr.reg_id
-        WHERE ca.lecturer_id = %s
-          AND co.offering_id = %s
+        WHERE co.offering_id = %s
           AND cr.status = 'registered'
         ORDER BY s.matric_no
         """,
-        (lecturer_id, offering_id),
+        (offering_id,),
     )
 
 
-def upload_result_for_lecturer(
+def list_result_roster(lecturer_id: int, offering_id: int) -> list[dict]:
+    if not lecturer_owns_offering(lecturer_id, offering_id):
+        return []
+    return list_offering_result_roster(offering_id)
+
+
+def save_result(
     reg_id: int,
     ca_score,
     exam_score,
@@ -298,3 +441,21 @@ def upload_result_for_lecturer(
         """,
         (row["result_id"],),
     )
+
+
+def upload_result_for_lecturer(
+    reg_id: int,
+    ca_score,
+    exam_score,
+    user_id: int,
+) -> dict | None:
+    return save_result(reg_id, ca_score, exam_score, user_id)
+
+
+def upload_result_for_admin(
+    reg_id: int,
+    ca_score,
+    exam_score,
+    user_id: int,
+) -> dict | None:
+    return save_result(reg_id, ca_score, exam_score, user_id)

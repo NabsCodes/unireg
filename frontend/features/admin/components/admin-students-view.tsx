@@ -1,21 +1,23 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { useMemo } from "react";
+import { Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatusBadge } from "@/components/shared/status-badge";
-import {
-  departmentFilter,
-} from "@/content/table-filters";
+import { Button } from "@/components/ui/button";
+import { departmentFilter } from "@/content/table-filters";
 import { useAdminStudents } from "@/features/admin/api/use-admin-lists";
+import { StudentFormDialog } from "@/features/admin/components/admin-crud-dialogs";
+import { createEditActionColumn } from "@/features/admin/components/admin-table-actions";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import { ALL_FILTER_VALUE } from "@/lib/data-table/column-filters";
 import type { StudentRow } from "@/types/academic";
 
-const columns: ColumnDef<StudentRow>[] = [
+const baseColumns: ColumnDef<StudentRow>[] = [
   {
     accessorKey: "matricNo",
     header: "Matric No.",
@@ -56,6 +58,19 @@ const columns: ColumnDef<StudentRow>[] = [
 
 export function AdminStudentsView() {
   const { data = [], isLoading, isError, error } = useAdminStudents();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editRow, setEditRow] = useState<StudentRow | null>(null);
+
+  const columns = useMemo(
+    () => [
+      ...baseColumns,
+      createEditActionColumn<StudentRow>((row) => {
+        setEditRow(row);
+        setDialogOpen(true);
+      }),
+    ],
+    [],
+  );
 
   const statusTabs = useMemo(
     () => ({
@@ -66,8 +81,7 @@ export function AdminStudentsView() {
         {
           value: "active",
           label: "Active",
-          count: data.filter((student) => student.status === "active")
-            .length,
+          count: data.filter((student) => student.status === "active").length,
         },
         {
           value: "graduated",
@@ -89,8 +103,19 @@ export function AdminStudentsView() {
   return (
     <PortalPage>
       <PageHeader
-        title="Students"
+        actions={
+          <Button
+            onClick={() => {
+              setEditRow(null);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus />
+            Add student
+          </Button>
+        }
         description="Manage student biodata, matric numbers, department, level, and academic status."
+        title="Students"
       />
       <QueryState
         error={error}
@@ -98,6 +123,7 @@ export function AdminStudentsView() {
         isError={isError}
         isLoading={isLoading}
         loadingLabel="Loading student records..."
+        variant="table"
       >
         <DataTable
           columns={columns}
@@ -110,6 +136,11 @@ export function AdminStudentsView() {
           searchPlaceholder="Search by name or matric number..."
         />
       </QueryState>
+      <StudentFormDialog
+        initial={editRow}
+        onOpenChange={setDialogOpen}
+        open={dialogOpen}
+      />
     </PortalPage>
   );
 }

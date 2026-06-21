@@ -61,7 +61,7 @@ const columns: ColumnDef<LecturerCourseRow>[] = [
         row.original.registeredStudents > 0;
       return (
         <StatusBadge
-          label={complete ? "Complete" : "Pending"}
+          label={complete ? "Complete" : "Pending uploads"}
           tone={complete ? "completed" : "pending"}
         />
       );

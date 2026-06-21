@@ -8,11 +8,13 @@ from app.schemas.academic import (
     CourseRegistrationRequest,
     CourseRegistrationResponse,
     StudentAvailableCourseOffering,
+    StudentDashboardSummary,
     StudentResultRow,
 )
 from app.schemas.auth import AuthUser
 from app.services.academic import (
     drop_course_for_student,
+    get_student_dashboard,
     list_available_course_offerings_for_student,
     list_student_results,
     list_student_results_by_id,
@@ -30,6 +32,14 @@ def _student_id(user: AuthUser) -> int:
             detail="Student account is not linked to a student record",
         )
     return user.student_id
+
+
+@router.get("/me/dashboard", response_model=StudentDashboardSummary)
+def my_dashboard(user: StudentUser) -> dict:
+    summary = get_student_dashboard(_student_id(user))
+    if summary is None:
+        raise HTTPException(status_code=404, detail="Student record not found")
+    return summary
 
 
 @router.get("/me/course-offerings", response_model=list[StudentAvailableCourseOffering])

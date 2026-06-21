@@ -8,6 +8,8 @@ import {
   getAdminDepartments,
   getAdminLecturers,
   getAdminOfferings,
+  getAdminSemesters,
+  getAdminSessions,
   getAdminStudents,
 } from "@/lib/api/admin";
 import { queryKeys } from "@/lib/api/query-keys";
@@ -51,5 +53,19 @@ export function useAdminAuditLogs() {
   return useQuery({
     queryKey: queryKeys.admin.auditLogs(),
     queryFn: getAdminAuditLogs,
+  });
+}
+
+export function useAdminSessions() {
+  return useQuery({
+    queryKey: queryKeys.admin.sessions(),
+    queryFn: getAdminSessions,
+  });
+}
+
+export function useAdminSemesters() {
+  return useQuery({
+    queryKey: queryKeys.admin.semesters(),
+    queryFn: getAdminSemesters,
   });
 }

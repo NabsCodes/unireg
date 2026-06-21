@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { pageSeo } from "@/content/seo";
 import { LecturerResultsView } from "@/features/lecturer/components/lecturer-results-view";
 import { createPortalMetadata } from "@/lib/metadata";
@@ -8,5 +10,9 @@ export const metadata = createPortalMetadata(
 );
 
 export default function LecturerResultsPage() {
-  return <LecturerResultsView />;
+  return (
+    <Suspense fallback={null}>
+      <LecturerResultsView />
+    </Suspense>
+  );
 }

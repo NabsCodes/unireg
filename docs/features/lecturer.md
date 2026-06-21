@@ -2,28 +2,43 @@
 
 ## Purpose
 
-Lecturer users manage results for course offerings assigned to them.
+Lecturer users upload and edit results for course offerings assigned to them.
 
 ## Core Screens
 
-- Lecturer dashboard
-- Assigned courses
-- Result upload
-- Uploaded results
+| Screen | Route | Purpose |
+| --- | --- | --- |
+| Dashboard | `/lecturer/dashboard` | Assigned courses + **Upload results** links |
+| Assigned Courses | `/lecturer/courses` | Read-only list + link to upload |
+| **Result Upload** | `/lecturer/results` | Enter or edit CA/exam scores per student |
+
+**Important:** Upload and edit happen on **Result Upload**, not on Assigned Courses. Assigned Courses only links there.
+
+## Upload vs Edit
+
+| Student row status | Button | Action |
+| --- | --- | --- |
+| **Pending** (no scores) | **Upload scores** | First-time entry |
+| **Uploaded** | **Edit scores** | Update existing scores |
+
+Both call `POST /api/lecturers/me/results` → PostgreSQL `upload_result()` (insert or update on conflict).
 
 ## Required Data Operations
 
-- Read assigned course offerings.
-- List students registered for an assigned offering.
-- Enter CA score and exam score.
-- Save or update results.
-- Trigger grade computation and audit logging.
+- Read assigned course offerings
+- List registered students for an offering
+- Upload CA (0–40) and exam (0–60) scores
+- Edit scores after upload
+- Trigger grade computation and audit logging
+
+## Demo note
+
+Seeded lecturer **Dr. Gabriel Ayem** (CSC384) includes one **pending** student (Maryam Bello) for first-time upload demo.
 
 ## Checklist
 
-- [ ] Assigned courses query defined
-- [ ] Registered students query defined
-- [ ] Result upload form defined
-- [ ] Result update rules defined
-- [ ] Lecturer access rules defined
-
+- [x] Assigned courses query
+- [x] Registered students roster query
+- [x] Result upload / edit form
+- [x] Lecturer assignment access rules
+- [x] Links from dashboard/courses to Result Upload

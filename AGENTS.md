@@ -38,7 +38,7 @@ This repo is a serious student capstone project. Treat it like a small real syst
 - Put Zod schemas and form value types in `frontend/schemas/`.
 - Put API helpers and shared frontend utilities in `frontend/lib/`.
 - Put HTTP fetch functions in `frontend/lib/api/` and TanStack Query hooks in `frontend/features/{role}/api/`.
-- Demo rows live in `frontend/content/demo-data/` and are read through `lib/api/` when `NEXT_PUBLIC_DATA_SOURCE=mock`.
+- Demo rows live in `frontend/content/demo-data/` and are read through `lib/api/` when `NEXT_PUBLIC_DATA_SOURCE=mock` only. **Live demo uses PostgreSQL via FastAPI** (`NEXT_PUBLIC_DATA_SOURCE=api`).
 - Keep backend routes under `backend/app/api`.
 - Keep backend database access under `backend/app/db`.
 - Keep backend business logic under `backend/app/services`.

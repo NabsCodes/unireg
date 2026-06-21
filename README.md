@@ -51,3 +51,26 @@ uvicorn app.main:app --reload
 ## Important
 
 Do not hide the database design behind an ORM. SQL files under `database/` are part of the assignment deliverables.
+
+## Live Data (Default)
+
+The portal reads **live data from PostgreSQL** through the FastAPI backend. This is the mode used for development, demo, and presentation.
+
+1. Load the SQL files in order — see `database/README.md`.
+2. Start PostgreSQL and run the backend (`uvicorn app.main:app --reload`).
+3. Copy `frontend/.env.example` to `frontend/.env.local`:
+
+```bash
+NEXT_PUBLIC_DATA_SOURCE=api
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+```
+
+4. Start the frontend: `pnpm --dir frontend dev`
+
+Demo logins use seeded users from `database/02_seed.sql` (password `demo1234` for all demo accounts).
+
+**Presenting or defending the project?** Start at [`docs/delivery/README.md`](docs/delivery/README.md) — defense guide, demo script, and cheat sheet for Batul.
+
+### Mock mode (optional fallback only)
+
+If `NEXT_PUBLIC_DATA_SOURCE` is not `api`, the frontend falls back to static rows in `frontend/content/demo-data/`. That path is for offline UI work only and is **not** the presentation source of truth.

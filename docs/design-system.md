@@ -53,9 +53,9 @@ types/academic.ts              → UI row models
 types/api.ts                   → wire-format + mappers
 ```
 
-- Default data source: `NEXT_PUBLIC_DATA_SOURCE=mock`
-- Live API: `NEXT_PUBLIC_DATA_SOURCE=api` + `NEXT_PUBLIC_API_BASE_URL`
-- Views should not import `content/demo-data/` directly once a screen has a query hook. Read through `lib/api/` instead.
+- Default data source: **`NEXT_PUBLIC_DATA_SOURCE=api`** (live PostgreSQL via FastAPI)
+- Mock fallback: any other `NEXT_PUBLIC_DATA_SOURCE` value → `content/demo-data/` through `lib/api/`
+- Views must not import `content/demo-data/` directly; read through `lib/api/` hooks instead
 
 ## Components
 
@@ -72,7 +72,8 @@ types/api.ts                   → wire-format + mappers
 | `DataTableFilterTabs` | Quick status tabs with counts |
 | `DataTablePagination` | Page size + navigation controls |
 | `DataTableEmpty` | Empty state inside tables |
-| `QueryState` | Loading and error wrapper for query-driven views |
+| `QueryState` | Loading and error wrapper for query-driven views (see `.cursor/rules/skeleton-loading-states.mdc`) |
+| `TableSkeleton`, `DashboardSkeleton`, etc. | Layout-matching loading placeholders in `components/shared/skeletons.tsx` |
 | `StatCard` | Dashboard metric summary |
 | `StatusBadge` | Registration / result / audit status |
 
@@ -102,6 +103,14 @@ All operational list screens must use `DataTable`:
 - student-facing dense lists (registration, results, transcript) should pass `renderMobileCard` for a card layout below `md`
 
 Do not use one-off static HTML tables for scalable list pages.
+
+## Skeleton and QueryState Rule
+
+- Every query-driven block must use `QueryState` with a **layout-matching** skeleton (`variant` or explicit `skeleton`).
+- Prefer the `query={useQuery(...)}` overload and render-prop children when wiring new screens.
+- Use `variant="table"` for `DataTable` pages, `variant="dashboard"` for stat-card dashboards, `variant="list"` for activity feeds.
+- Do not use a generic full-width skeleton block for table or dashboard layouts.
+- Empty results belong in `DataTable` empty states, not in `QueryState`.
 
 ## Forms Rule
 

@@ -1,16 +1,21 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { Plus } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
+import { Button } from "@/components/ui/button";
 import { departmentFilter } from "@/content/table-filters";
 import { useAdminLecturers } from "@/features/admin/api/use-admin-lists";
+import { LecturerFormDialog } from "@/features/admin/components/admin-crud-dialogs";
+import { createEditActionColumn } from "@/features/admin/components/admin-table-actions";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import type { LecturerRow } from "@/types/academic";
 
-const columns: ColumnDef<LecturerRow>[] = [
+const baseColumns: ColumnDef<LecturerRow>[] = [
   {
     accessorKey: "staffNo",
     header: "Staff No.",
@@ -40,12 +45,36 @@ const columns: ColumnDef<LecturerRow>[] = [
 
 export function AdminLecturersView() {
   const { data = [], isLoading, isError, error } = useAdminLecturers();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editRow, setEditRow] = useState<LecturerRow | null>(null);
+
+  const columns = useMemo(
+    () => [
+      ...baseColumns,
+      createEditActionColumn<LecturerRow>((row) => {
+        setEditRow(row);
+        setDialogOpen(true);
+      }),
+    ],
+    [],
+  );
 
   return (
     <PortalPage>
       <PageHeader
-        title="Lecturers"
+        actions={
+          <Button
+            onClick={() => {
+              setEditRow(null);
+              setDialogOpen(true);
+            }}
+          >
+            <Plus />
+            Add lecturer
+          </Button>
+        }
         description="Manage lecturer profiles, staff numbers, and department assignments."
+        title="Lecturers"
       />
       <QueryState
         error={error}
@@ -53,6 +82,7 @@ export function AdminLecturersView() {
         isError={isError}
         isLoading={isLoading}
         loadingLabel="Loading lecturer records..."
+        variant="table"
       >
         <DataTable
           columns={columns}
@@ -64,6 +94,11 @@ export function AdminLecturersView() {
           searchPlaceholder="Search by name or staff number..."
         />
       </QueryState>
+      <LecturerFormDialog
+        initial={editRow}
+        onOpenChange={setDialogOpen}
+        open={dialogOpen}
+      />
     </PortalPage>
   );
 }
