@@ -6,6 +6,8 @@ Stack: FastAPI + PostgreSQL (raw SQL in services, no ORM).
 
 ## Setup
 
+First-time install (PostgreSQL, Python, env): see **`docs/local-setup.md`**.
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate

@@ -6,6 +6,12 @@ The docs should keep the project easy to continue across Nabeel, Batul, Claude, 
 
 ## Read Order
 
+**New teammate or first laptop setup?** Start here:
+
+0. `local-setup.md` — install PostgreSQL, Python, Node/pnpm, env files, daily workflow
+
+Then continue with:
+
 1. `workflow.md`
 2. `status-board.md`
 3. `requirements.md`
@@ -21,6 +27,7 @@ The docs should keep the project easy to continue across Nabeel, Batul, Claude, 
 
 | File | Purpose |
 | --- | --- |
+| `local-setup.md` | **Beginner laptop setup** — PostgreSQL, backend, frontend, troubleshooting. |
 | `workflow.md` | How to move from design to SQL to app demo without losing context. |
 | `status-board.md` | Quick checklist for what is done, in progress, and waiting. |
 | `handoff-template.md` | Copy-paste structure for handing work across agents or chats. |
@@ -53,4 +60,4 @@ If these disagree, update the docs before writing code.
 - **Primary:** PostgreSQL → FastAPI → Next.js (`NEXT_PUBLIC_DATA_SOURCE=api`)
 - **Fallback:** `frontend/content/mock/` when mock mode is enabled (offline UI only)
 
-See root `README.md` for env setup and demo credentials.
+See root `README.md` for env setup and demo credentials. For first-time installation, use `docs/local-setup.md`.

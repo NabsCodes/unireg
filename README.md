@@ -16,6 +16,8 @@ scripts/    Utility scripts
 
 ## Recommended Read Order
 
+**New to the project?** Start with [`docs/local-setup.md`](docs/local-setup.md) — full beginner guide for PostgreSQL, Python backend, and Next.js frontend on Mac.
+
 1. `docs/README.md`
 2. `docs/workflow.md`
 3. `docs/status-board.md`
@@ -32,6 +34,8 @@ scripts/    Utility scripts
 - SQL deliverables: raw SQL files under `database/`
 
 ## First Commands
+
+Full step-by-step setup (PostgreSQL, Python, pnpm, env files): **`docs/local-setup.md`**.
 
 These commands are the intended workflow after dependencies are installed.
 
