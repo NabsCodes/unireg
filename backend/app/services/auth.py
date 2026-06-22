@@ -14,6 +14,8 @@ def get_user_by_id(user_id: int) -> dict | None:
             ua.lecturer_id,
             s.matric_no,
             l.staff_no,
+            s.level,
+            coalesce(sd.dept_name, ld.dept_name) AS department,
             CASE
                 WHEN ua.role = 'student'
                     THEN s.first_name || ' ' || s.last_name
@@ -23,7 +25,9 @@ def get_user_by_id(user_id: int) -> dict | None:
             END AS name
         FROM user_account ua
         LEFT JOIN student s ON s.student_id = ua.student_id
+        LEFT JOIN department sd ON sd.dept_id = s.dept_id
         LEFT JOIN lecturer l ON l.lecturer_id = ua.lecturer_id
+        LEFT JOIN department ld ON ld.dept_id = l.dept_id
         WHERE ua.user_id = %s
           AND ua.is_active = true
         """,
@@ -44,6 +48,8 @@ def get_login_account(identifier: str) -> dict | None:
             ua.lecturer_id,
             s.matric_no,
             l.staff_no,
+            s.level,
+            coalesce(sd.dept_name, ld.dept_name) AS department,
             CASE
                 WHEN ua.role = 'student'
                     THEN s.first_name || ' ' || s.last_name
@@ -53,7 +59,9 @@ def get_login_account(identifier: str) -> dict | None:
             END AS name
         FROM user_account ua
         LEFT JOIN student s ON s.student_id = ua.student_id
+        LEFT JOIN department sd ON sd.dept_id = s.dept_id
         LEFT JOIN lecturer l ON l.lecturer_id = ua.lecturer_id
+        LEFT JOIN department ld ON ld.dept_id = l.dept_id
         WHERE ua.is_active = true
           AND (
               lower(ua.email) = %s

@@ -15,6 +15,8 @@ class AuthUser(BaseModel):
     matric_no: str | None = None
     staff_no: str | None = None
     name: str | None = None
+    level: str | None = None
+    department: str | None = None
 
 
 class LoginResponse(BaseModel):

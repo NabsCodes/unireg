@@ -1,82 +1,24 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
 import { StatCard } from "@/components/shared/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currentAcademicPeriod, portalUsers } from "@/content/data/portal";
 import { useStudentTranscript } from "@/features/student/api/use-student-transcript";
-import { TranscriptRecordCard } from "@/features/student/components/student-list-cards";
+import { useStudentDashboard } from "@/features/student/api/use-student-dashboard";
+import { TranscriptAcademicRecord } from "@/features/student/components/transcript-academic-record";
 import { TranscriptExportMenu } from "@/features/student/components/transcript-export-menu";
 import { TranscriptPreviewSheet } from "@/features/student/components/transcript-preview-sheet";
 import { PortalPage } from "@/features/portal/components/portal-page";
 import { usePortalUser, useStudentScope } from "@/hooks/use-portal-user";
-import { formatGradePoint, formatScore } from "@/lib/format/academic";
+import { formatGradePoint } from "@/lib/format/academic";
 import type { TranscriptExportMeta } from "@/lib/exports/types";
 import type { StudentResultRow } from "@/types/academic";
-
-const columns: ColumnDef<StudentResultRow>[] = [
-  {
-    accessorKey: "session",
-    header: "Session",
-  },
-  {
-    accessorKey: "semester",
-    header: "Semester",
-  },
-  {
-    id: "course",
-    header: "Course",
-    accessorFn: (row) => `${row.courseCode} ${row.courseTitle}`,
-    cell: ({ row }) => (
-      <div>
-        <p className="font-medium">{row.original.courseCode}</p>
-        <p className="text-muted-foreground text-xs">
-          {row.original.courseTitle}
-        </p>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "creditUnits",
-    header: "Credits",
-    cell: ({ row }) => (
-      <span className="tabular-nums">{row.getValue("creditUnits")}</span>
-    ),
-  },
-  {
-    accessorKey: "totalScore",
-    header: "Score",
-    cell: ({ row }) => (
-      <span className="tabular-nums">
-        {formatScore(row.getValue("totalScore"))}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "grade",
-    header: "Grade",
-    cell: ({ row }) => {
-      const grade = row.getValue("grade") as string | null;
-      return grade ?? "—";
-    },
-  },
-  {
-    accessorKey: "gradePoint",
-    header: "GPA",
-    cell: ({ row }) => (
-      <span className="tabular-nums">
-        {formatGradePoint(row.getValue("gradePoint") as number | null)}
-      </span>
-    ),
-  },
-];
 
 function buildTranscriptSummary(
   rows: StudentResultRow[],
@@ -110,9 +52,12 @@ export function StudentTranscriptView() {
     isError,
     error,
   } = useStudentTranscript(matricNo);
+  const { data: dashboard } = useStudentDashboard();
+  const displayLevel = user.level ?? dashboard?.level ?? "—";
   const summary = useMemo(
-    () => buildTranscriptSummary(data, user.department),
-    [data, user.department],
+    () =>
+      buildTranscriptSummary(data, user.department ?? dashboard?.department),
+    [dashboard?.department, data, user.department],
   );
 
   const exportMeta = useMemo<TranscriptExportMeta>(
@@ -120,7 +65,7 @@ export function StudentTranscriptView() {
       name: user.name,
       matricNo: user.identifier ?? matricNo,
       department: summary.department,
-      level: user.level ?? "—",
+      level: displayLevel,
       cgpa: formatGradePoint(summary.cgpa),
       totalCreditUnits: summary.totalCreditUnits,
       sessionLabel: currentAcademicPeriod.label,
@@ -130,8 +75,8 @@ export function StudentTranscriptView() {
       summary.cgpa,
       summary.department,
       summary.totalCreditUnits,
+      displayLevel,
       user.identifier,
-      user.level,
       user.name,
     ],
   );
@@ -169,7 +114,7 @@ export function StudentTranscriptView() {
           <CardTitle className="text-base">{user.name}</CardTitle>
           <p className="text-muted-foreground text-sm">
             {user.identifier ?? matricNo} · {summary.department} · Level{" "}
-            {user.level ?? "—"}
+            {displayLevel}
           </p>
         </CardHeader>
         <CardContent>
@@ -202,7 +147,8 @@ export function StudentTranscriptView() {
         <div>
           <h2 className="text-base font-semibold">Academic Record</h2>
           <p className="text-muted-foreground text-sm">
-            Course history for {user.name} across registered sessions.
+            Browse courses by session and semester. Expand a term to see your
+            registered courses and grades.
           </p>
         </div>
         <QueryState
@@ -212,17 +158,7 @@ export function StudentTranscriptView() {
           isLoading={isLoading}
           loadingLabel="Loading transcript records..."
         >
-          <DataTable
-            columns={columns}
-            data={data}
-            emptyDescription="Transcript rows will appear as results are published each semester."
-            emptyTitle="No transcript records"
-            renderMobileCard={(row) => (
-              <TranscriptRecordCard result={row.original} />
-            )}
-            searchKey="course"
-            searchPlaceholder="Search by course code or title..."
-          />
+          <TranscriptAcademicRecord rows={data} />
         </QueryState>
       </section>
     </PortalPage>

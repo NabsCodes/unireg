@@ -15,6 +15,8 @@ export function authUserToPortalUser(user: StoredAuthUser): PortalUser {
     role: roleLabels[user.role] ?? user.role,
     email: user.email,
     identifier: user.matric_no ?? user.staff_no ?? undefined,
+    department: user.department ?? undefined,
+    level: user.level ?? undefined,
     status: "active",
   };
 }

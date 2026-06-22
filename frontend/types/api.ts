@@ -30,6 +30,8 @@ export type ApiAuthUser = {
   matric_no: string | null;
   staff_no: string | null;
   name: string | null;
+  level: string | null;
+  department: string | null;
 };
 
 export type ApiLoginResponse = {
