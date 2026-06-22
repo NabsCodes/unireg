@@ -33,7 +33,6 @@ export async function updateDepartment(
 }
 
 export async function createStudent(body: {
-  matric_no: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -67,7 +66,6 @@ export async function updateStudent(
 }
 
 export async function createLecturer(body: {
-  staff_no: string;
   first_name: string;
   last_name: string;
   email: string;

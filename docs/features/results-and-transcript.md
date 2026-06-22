@@ -7,6 +7,8 @@ Results and transcript generation demonstrate the main database value of UniReg.
 ## Rules
 
 - A result must belong to an existing registration.
+- **Lecturers** enter scores for assigned offerings (primary path).
+- **Admin / registry** may correct scores on any offering (exception path); both use `upload_result()` and audit logs.
 - Total score should be derived from CA and exam score.
 - Grade and grade point should come from `GRADE_SCALE`.
 - GPA should use `SUM(grade_point * credit_units) / SUM(credit_units)`.

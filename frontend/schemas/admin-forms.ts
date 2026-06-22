@@ -18,6 +18,10 @@ export const studentFormSchema = z.object({
   status: z.enum(["active", "graduated", "suspended"]),
 });
 
+export const studentCreateFormSchema = studentFormSchema.omit({
+  matric_no: true,
+});
+
 export const studentEditFormSchema = studentFormSchema.omit({
   matric_no: true,
 });
@@ -31,6 +35,10 @@ export const lecturerFormSchema = z.object({
   dept_id: requiredTrimmedText(1, "Department is required"),
 });
 
+export const lecturerCreateFormSchema = lecturerFormSchema.omit({
+  staff_no: true,
+});
+
 export const lecturerEditFormSchema = lecturerFormSchema.omit({
   staff_no: true,
 });
@@ -38,7 +46,11 @@ export const lecturerEditFormSchema = lecturerFormSchema.omit({
 export const courseFormSchema = z.object({
   course_code: requiredTrimmedText(3, "Course code is required"),
   course_title: requiredTrimmedText(3, "Course title is required"),
-  credit_units: z.coerce.number<number>().int().min(1).max(12),
+  credit_units: z
+    .number({ error: "Credit units are required" })
+    .int()
+    .min(1)
+    .max(12),
   level: requiredTrimmedText(1, "Level is required"),
   dept_id: requiredTrimmedText(1, "Department is required"),
 });
@@ -50,13 +62,21 @@ export const courseEditFormSchema = courseFormSchema.omit({
 export const offeringFormSchema = z.object({
   course_id: requiredTrimmedText(1, "Course is required"),
   semester_id: requiredTrimmedText(1, "Semester is required"),
-  max_capacity: z.coerce.number<number>().int().min(1).max(500),
+  max_capacity: z
+    .number({ error: "Capacity is required" })
+    .int()
+    .min(1)
+    .max(500),
   status: z.enum(["open", "closed", "archived"]),
   lecturer_ids: z.array(z.string()),
 });
 
 export const offeringEditFormSchema = z.object({
-  max_capacity: z.coerce.number<number>().int().min(1).max(500),
+  max_capacity: z
+    .number({ error: "Capacity is required" })
+    .int()
+    .min(1)
+    .max(500),
   status: z.enum(["open", "closed", "archived"]),
   lecturer_ids: z.array(z.string()),
 });
@@ -97,9 +117,9 @@ export const resultUploadFormSchema = z.object({
 });
 
 export type DepartmentFormValues = z.infer<typeof departmentFormSchema>;
-export type StudentFormValues = z.infer<typeof studentFormSchema>;
+export type StudentCreateFormValues = z.infer<typeof studentCreateFormSchema>;
 export type StudentEditFormValues = z.infer<typeof studentEditFormSchema>;
-export type LecturerFormValues = z.infer<typeof lecturerFormSchema>;
+export type LecturerCreateFormValues = z.infer<typeof lecturerCreateFormSchema>;
 export type LecturerEditFormValues = z.infer<typeof lecturerEditFormSchema>;
 export type CourseFormValues = z.infer<typeof courseFormSchema>;
 export type CourseEditFormValues = z.infer<typeof courseEditFormSchema>;

@@ -14,6 +14,11 @@ import type {
   SemesterRow,
   StudentRow,
 } from "@/types/academic";
+import {
+  formatAuditActionLabel,
+  formatAuditSearchText,
+  formatAuditSummary,
+} from "@/lib/format/audit";
 import { toNumberOrNull } from "@/lib/format/academic";
 
 export type ApiAuthUser = {
@@ -214,6 +219,10 @@ export type ApiAuditLogRow = {
   new_values: Record<string, unknown> | null;
   created_at: string;
   actor_name?: string | null;
+  student_name?: string | null;
+  matric_no?: string | null;
+  course_code?: string | null;
+  course_title?: string | null;
 };
 
 export type DashboardActivityItem = {
@@ -512,36 +521,31 @@ export function mapAuditLogRow(
   row: ApiAuditLogRow,
   index: number,
 ): AuditLogRow {
-  const detailSource = row.new_values ?? row.old_values;
-  const detail =
-    detailSource && Object.keys(detailSource).length > 0
-      ? JSON.stringify(detailSource)
-      : `${row.action} on ${row.table_name} #${row.record_id}`;
-
   return {
     id: String(row.log_id ?? index + 1),
     timestamp: formatAuditTimestamp(row.created_at),
     actor: row.actor_name ?? (row.user_id ? `User #${row.user_id}` : "System"),
-    action: row.action.replace(/_/g, " "),
-    entity: row.table_name,
-    detail,
+    action: formatAuditActionLabel(row.action),
+    summary: formatAuditSummary(row),
+    searchText: formatAuditSearchText(row),
   };
 }
 
 function humanizeAuditAction(row: ApiAuditLogRow): string {
   const actor =
     row.actor_name ?? (row.user_id ? `User #${row.user_id}` : "System");
-  const action = row.action.toUpperCase();
 
-  if (action === "RESULT_INSERTED") {
-    return `${actor} uploaded a result record.`;
+  if (row.action.toUpperCase() === "RESULT_INSERTED") {
+    const summary = formatAuditSummary(row);
+    return `${actor} uploaded result scores — ${summary}`;
   }
 
-  if (action === "RESULT_UPDATED") {
-    return `${actor} updated a result record.`;
+  if (row.action.toUpperCase() === "RESULT_UPDATED") {
+    const summary = formatAuditSummary(row);
+    return `${actor} corrected result scores — ${summary}`;
   }
 
-  return `${actor} performed ${row.action.replace(/_/g, " ").toLowerCase()} on ${row.table_name}.`;
+  return `${actor} ${formatAuditActionLabel(row.action).toLowerCase()} on ${row.table_name.replace(/_/g, " ")}.`;
 }
 
 export function mapDashboardActivityItem(

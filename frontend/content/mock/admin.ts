@@ -277,49 +277,41 @@ export const auditLogs: AuditLogRow[] = [
     id: "1",
     timestamp: "2026-03-18 09:14",
     actor: "Dr. Gabriel Ayem",
-    action: "Result upload",
-    entity: "CSC384",
-    detail: "Uploaded CA and exam scores for 2 registered students.",
+    action: "Result uploaded",
+    summary:
+      "Batul Hassan (A00025332) · CSC384 · Database Systems — CA 36, Exam 55 · Total 91 · Grade A",
+    searchText:
+      "Dr. Gabriel Ayem Result uploaded Batul Hassan A00025332 CSC384 Database Systems",
   },
   {
     id: "2",
     timestamp: "2026-03-17 16:42",
-    actor: "Batul Hassan",
-    action: "Course registration",
-    entity: "MTH201",
-    detail: "Registered for Numerical Methods (First Semester).",
+    actor: "Dr. Musa Danjuma",
+    action: "Result uploaded",
+    summary:
+      "Simtong Tongnan (A00024575) · CSC302 · Operating Systems — CA 32, Exam 50 · Total 82 · Grade B",
+    searchText:
+      "Dr. Musa Danjuma Result uploaded Simtong Tongnan A00024575 CSC302 Operating Systems",
   },
   {
     id: "3",
     timestamp: "2026-03-17 11:05",
-    actor: "Dr. Musa Danjuma",
-    action: "Result upload",
-    entity: "CSC302",
-    detail: "Uploaded CA and exam scores for 2 registered students.",
+    actor: "Registry Administrator",
+    action: "Result updated",
+    summary:
+      "Batul Hassan (A00025332) · CSC384 · Database Systems — CA 36 → 38, Exam 55 → 58, Grade A → A",
+    searchText:
+      "Registry Administrator Result updated Batul Hassan A00025332 CSC384 Database Systems",
   },
   {
     id: "4",
     timestamp: "2025-09-10 08:30",
-    actor: "Batul Hassan",
-    action: "Course registration",
-    entity: "CSC384",
-    detail: "Registered for Database Systems (First Semester).",
-  },
-  {
-    id: "5",
-    timestamp: "2025-09-10 08:32",
-    actor: "Simtong Tongnan",
-    action: "Course registration",
-    entity: "CSC384",
-    detail: "Registered for Database Systems (First Semester).",
-  },
-  {
-    id: "6",
-    timestamp: "2025-09-01 10:00",
-    actor: "Administrator",
-    action: "Offering opened",
-    entity: "2025/2026 First Semester",
-    detail: "Course offerings published for the current session.",
+    actor: "Dr. Gabriel Ayem",
+    action: "Result uploaded",
+    summary:
+      "Maryam Bello (A00024901) · CSC384 · Database Systems — CA 34, Exam 48 · Total 82 · Grade B",
+    searchText:
+      "Dr. Gabriel Ayem Result uploaded Maryam Bello A00024901 CSC384 Database Systems",
   },
 ];
 

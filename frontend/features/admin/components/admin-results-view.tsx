@@ -127,8 +127,8 @@ export function AdminResultsView() {
   return (
     <PortalPage>
       <PageHeader
-        description="Review and correct student scores for any offering. Grade and GPA recompute through PostgreSQL."
-        title="Result Oversight"
+        description="Lecturers upload on Upload Results. Use this page only for registry corrections — changes are audited via upload_result()."
+        title="Result Corrections"
       />
 
       <Card>
@@ -175,8 +175,9 @@ export function AdminResultsView() {
           >
             {offerings.length === 0 ? (
               <p className="text-muted-foreground text-sm">
-                Create course offerings first, then registered students will
-                appear here for score entry or correction.
+                Create course offerings first. After lecturers upload scores,
+                registered students appear here for registry review or
+                correction.
               </p>
             ) : (
               <DataTable

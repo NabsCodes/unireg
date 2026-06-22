@@ -76,7 +76,7 @@ When an examiner asks for SQL proof, open these (in order):
 
 - Explain every React component or file in `frontend/`
 - Memorize API route names (helpful, not required)
-- Demo the grade-scale screen at `/admin/grade-scale` or result oversight at `/admin/results`
+- Demo the grade-scale screen at `/admin/grade-scale` or registry corrections at `/admin/results` (optional — only if showing exception handling, not primary upload)
 
 ---
 

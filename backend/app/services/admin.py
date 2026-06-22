@@ -3,6 +3,7 @@ from typing import Any
 from app.core.config import settings
 from app.core.security import hash_password
 from app.db.pool import get_connection
+from app.services.identifiers import next_matric_no, next_staff_no
 from app.services.query import execute_one, fetch_all, fetch_one
 
 
@@ -118,6 +119,7 @@ def list_students() -> list[dict]:
 
 def create_student(payload: dict) -> dict | None:
     password_hash = hash_password(settings.default_user_password)
+    matric_no = payload.get("matric_no") or next_matric_no()
     with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -135,7 +137,7 @@ def create_student(payload: dict) -> dict | None:
                 RETURNING student_id
                 """,
                 (
-                    payload["matric_no"],
+                    matric_no,
                     payload["first_name"],
                     payload["last_name"],
                     payload["email"],
@@ -224,6 +226,7 @@ def list_lecturers() -> list[dict]:
 
 def create_lecturer(payload: dict) -> dict | None:
     password_hash = hash_password(settings.default_user_password)
+    staff_no = payload.get("staff_no") or next_staff_no(payload["dept_id"])
     with get_connection() as connection:
         with connection.cursor() as cursor:
             cursor.execute(
@@ -240,7 +243,7 @@ def create_lecturer(payload: dict) -> dict | None:
                 RETURNING lecturer_id
                 """,
                 (
-                    payload["staff_no"],
+                    staff_no,
                     payload["first_name"],
                     payload["last_name"],
                     payload["email"],
@@ -657,17 +660,28 @@ def list_audit_logs() -> list[dict]:
             COALESCE(
                 CASE
                     WHEN ua.role = 'student'
-                        THEN s.first_name || ' ' || s.last_name
+                        THEN s_actor.first_name || ' ' || s_actor.last_name
                     WHEN ua.role = 'lecturer'
                         THEN l.title || ' ' || l.first_name || ' ' || l.last_name
                     ELSE 'Registry Administrator'
                 END,
                 'System'
-            ) AS actor_name
+            ) AS actor_name,
+            s.first_name || ' ' || s.last_name AS student_name,
+            s.matric_no,
+            c.course_code,
+            c.course_title
         FROM audit_log al
         LEFT JOIN user_account ua ON ua.user_id = al.user_id
-        LEFT JOIN student s ON s.student_id = ua.student_id
+        LEFT JOIN student s_actor ON s_actor.student_id = ua.student_id
         LEFT JOIN lecturer l ON l.lecturer_id = ua.lecturer_id
+        LEFT JOIN result res
+            ON al.table_name = 'result'
+           AND res.result_id = al.record_id
+        LEFT JOIN course_registration cr ON cr.reg_id = res.reg_id
+        LEFT JOIN student s ON s.student_id = cr.student_id
+        LEFT JOIN course_offering co ON co.offering_id = cr.offering_id
+        LEFT JOIN course c ON c.course_id = co.course_id
         ORDER BY al.created_at DESC, al.log_id DESC
         LIMIT 100
         """

@@ -4,6 +4,7 @@ import type { Control, FieldPath, FieldValues } from "react-hook-form";
 
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -26,7 +27,7 @@ type TextFieldProps<T extends FieldValues> = {
   control: Control<T>;
   name: FieldPath<T>;
   label: string;
-  type?: "text" | "email" | "date" | "number";
+  type?: "text" | "email" | "date";
   disabled?: boolean;
   placeholder?: string;
 };
@@ -52,20 +53,123 @@ export function TextFormField<T extends FieldValues>({
               placeholder={placeholder}
               type={type}
               {...field}
-              onChange={(event) => {
-                if (type === "number") {
-                  field.onChange(event.target.valueAsNumber || 0);
-                  return;
-                }
-                field.onChange(event.target.value);
-              }}
-              value={field.value ?? (type === "number" ? 0 : "")}
+              value={field.value ?? ""}
             />
           </FormControl>
           <FormMessage />
         </FormItem>
       )}
     />
+  );
+}
+
+type IntegerFieldProps<T extends FieldValues> = {
+  control: Control<T>;
+  name: FieldPath<T>;
+  label: string;
+  disabled?: boolean;
+  placeholder?: string;
+  min?: number;
+  max?: number;
+};
+
+export function IntegerFormField<T extends FieldValues>({
+  control,
+  name,
+  label,
+  disabled,
+  placeholder,
+  min,
+  max,
+}: IntegerFieldProps<T>) {
+  return (
+    <FormField
+      control={control as unknown as Control<FieldValues>}
+      name={name as string}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input
+              autoComplete="off"
+              disabled={disabled}
+              inputMode="numeric"
+              placeholder={placeholder}
+              type="text"
+              value={
+                field.value === undefined || field.value === null
+                  ? ""
+                  : String(field.value)
+              }
+              onChange={(event) => {
+                const next = event.target.value;
+                if (next === "") {
+                  field.onChange(undefined);
+                  return;
+                }
+
+                if (!/^\d+$/.test(next)) {
+                  return;
+                }
+
+                const parsed = Number(next);
+                if (min !== undefined && parsed < min) {
+                  return;
+                }
+                if (max !== undefined && parsed > max) {
+                  return;
+                }
+
+                field.onChange(parsed);
+              }}
+            />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+type ReadOnlyFieldProps = {
+  label: string;
+  value: string;
+  description?: string;
+};
+
+export function ReadOnlyFormField({
+  label,
+  value,
+  description,
+}: ReadOnlyFieldProps) {
+  return (
+    <div className="space-y-2">
+      <p className="text-sm leading-none font-medium">{label}</p>
+      <p className="border-input bg-muted/40 text-foreground rounded-lg border px-3 py-2 text-sm">
+        {value}
+      </p>
+      {description ? <FormDescription>{description}</FormDescription> : null}
+    </div>
+  );
+}
+
+type AutoAssignedFieldProps = {
+  label: string;
+  description: string;
+};
+
+export function AutoAssignedField({
+  label,
+  description,
+}: AutoAssignedFieldProps) {
+  return (
+    <div className="space-y-2">
+      <p className="text-sm leading-none font-medium">{label}</p>
+      <p className="border-input bg-muted/40 text-muted-foreground rounded-lg border border-dashed px-3 py-2 text-sm">
+        Assigned automatically on save
+      </p>
+      <FormDescription>{description}</FormDescription>
+    </div>
   );
 }
 

@@ -53,8 +53,8 @@ Authorization: Bearer <token>
 | `GET` | `/api/admin/offerings` | List course offerings and assigned lecturers |
 | `POST` | `/api/admin/offerings` | Offer a course for a semester and assign lecturers |
 | `PATCH` | `/api/admin/offerings/{offering_id}` | Edit capacity/status/lecturer assignments |
-| `GET` | `/api/admin/results?offering_id=1` | Result roster for an offering (admin oversight) |
-| `POST` | `/api/admin/results` | Enter or update CA/exam scores (registry override) |
+| `GET` | `/api/admin/results?offering_id=1` | Result roster for an offering (registry review) |
+| `POST` | `/api/admin/results` | Apply registry correction to CA/exam scores (same `upload_result()` as lecturer) |
 | `GET` | `/api/admin/grade-scale` | Show 4.0 grading table |
 | `GET` | `/api/admin/audit-logs` | Review result insert/update audit logs |
 
@@ -105,7 +105,7 @@ Authorization: Bearer <token>
 - Offerings: table plus create/edit dialog for course, semester, capacity,
   status, assigned lecturers.
 - Grade Scale: read-only table showing the 4.0 system.
-- Result Oversight: choose offering, view roster, enter or edit CA/exam scores.
+- Result Corrections: choose offering, review lecturer-uploaded scores, apply registry corrections when required (not primary grade entry).
 - Audit Logs: read-only table showing result insert/update changes.
 
 ### Student

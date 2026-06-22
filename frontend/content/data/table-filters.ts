@@ -26,9 +26,8 @@ export const studentStatusFilterOptions = [
 ] as const satisfies readonly DataTableFilterOption[];
 
 export const auditActionFilterOptions = [
-  { value: "Course registration", label: "Course registration" },
-  { value: "Result upload", label: "Result upload" },
-  { value: "Offering opened", label: "Offering opened" },
+  { value: "Result uploaded", label: "Result uploaded" },
+  { value: "Result updated", label: "Result updated" },
 ] as const satisfies readonly DataTableFilterOption[];
 
 export const departmentFilter = {

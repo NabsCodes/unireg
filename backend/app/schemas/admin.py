@@ -27,7 +27,7 @@ class DepartmentRow(BaseModel):
 
 
 class StudentCreate(BaseModel):
-    matric_no: str
+    matric_no: str | None = None
     first_name: str
     last_name: str
     email: str
@@ -58,7 +58,7 @@ class StudentRow(BaseModel):
 
 
 class LecturerCreate(BaseModel):
-    staff_no: str
+    staff_no: str | None = None
     first_name: str
     last_name: str
     email: str
@@ -180,6 +180,10 @@ class AuditLogRow(BaseModel):
     new_values: dict | None
     created_at: datetime
     actor_name: str | None = None
+    student_name: str | None = None
+    matric_no: str | None = None
+    course_code: str | None = None
+    course_title: str | None = None
 
 
 class GradeScaleRow(BaseModel):

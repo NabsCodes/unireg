@@ -104,6 +104,8 @@ Admin Portal
 ├── Courses            /admin/courses
 ├── Academic Setup     /admin/academic      (sessions + semesters)
 ├── Offerings          /admin/offerings
+├── Result Corrections /admin/results     (registry exceptions — not primary grading)
+├── Grade Scale        /admin/grade-scale
 └── Audit Logs         /admin/audit-logs
 ```
 
@@ -394,6 +396,18 @@ Trigger: insert row into audit_log
 
 ---
 
+### 2.x Result corrections (registry — optional demo)
+
+**URL:** `/admin/results`
+
+Use this screen **after** explaining lecturer upload — not as the main grading story.
+
+**Say:**
+
+> “In most university systems, lecturers enter marks and the registry maintains the official record. UniReg follows that: lecturers upload on their portal. Admin **Result Corrections** is for exceptions — a wrong score, a missing entry, or a post-release fix. It calls the same `upload_result()` function and still writes to audit logs.”
+
+---
+
 ## Part 5 — Admin audit (closing the loop)
 
 **URL:** `/admin/audit-logs`
@@ -450,6 +464,9 @@ Even if you did not write every line of code, you can defend:
 ---
 
 ## Part 8 — Questions you might get (and short answers)
+
+**Q: Can admin enter every student's scores?**
+A: Technically yes, through **Result Corrections**, but that is the registry exception path — like real ERPs where the records office fixes errors. Day-to-day entry is the lecturer's job on **Upload Results**.
 
 **Q: Why PostgreSQL functions instead of only Python?**  
 A: So business rules stay in the database layer where they cannot be skipped by a buggy client.

@@ -47,7 +47,7 @@
 - [x] Admin create student/lecturer now creates login `user_account` (default password `demo1234`)
 - [x] Department list returns live active student counts
 - [x] Admin **grade scale** read-only screen
-- [x] Admin **result oversight** (view + edit scores for any offering)
+- [x] Admin **result corrections** (review + registry override for any offering; lecturers remain primary upload path)
 - [ ] Rehearse full demo script end-to-end on local PostgreSQL (`docs/delivery/demo-script.md`)
 - [ ] Batul reads defense guide and completes one supervised rehearsal
 

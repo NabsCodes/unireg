@@ -26,7 +26,7 @@ export const adminNavigation: NavItem[] = [
   { label: "Courses", href: "/admin/courses", icon: BookOpen },
   { label: "Offerings", href: "/admin/offerings", icon: ClipboardList },
   { label: "Academic Setup", href: "/admin/academic", icon: CalendarRange },
-  { label: "Result Oversight", href: "/admin/results", icon: Upload },
+  { label: "Result Corrections", href: "/admin/results", icon: Upload },
   { label: "Grade Scale", href: "/admin/grade-scale", icon: Scale },
   { label: "Audit Logs", href: "/admin/audit-logs", icon: ScrollText },
 ];

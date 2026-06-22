@@ -22,15 +22,36 @@ type DataTablePaginationProps<TData> = {
   pageSizeOptions?: number[];
 };
 
+function formatResultCount(count: number): string {
+  return count === 1 ? "1 result" : `${count} results`;
+}
+
 export function DataTablePagination<TData>({
   table,
   pageSizeOptions = [5, 10, 20, 30, 50],
 }: DataTablePaginationProps<TData>) {
   const totalRows = table.getFilteredRowModel().rows.length;
+
+  if (totalRows === 0) {
+    return null;
+  }
+
   const pageIndex = table.getState().pagination.pageIndex;
   const pageSize = table.getState().pagination.pageSize;
-  const pageCount = Math.max(table.getPageCount(), 1);
-  const start = totalRows === 0 ? 0 : pageIndex * pageSize + 1;
+  const fitsOnOnePage = totalRows <= pageSize;
+
+  if (fitsOnOnePage) {
+    return (
+      <div className="border-border border-t px-4 py-3">
+        <p className="text-muted-foreground text-sm">
+          {formatResultCount(totalRows)}
+        </p>
+      </div>
+    );
+  }
+
+  const pageCount = table.getPageCount();
+  const start = pageIndex * pageSize + 1;
   const end = Math.min((pageIndex + 1) * pageSize, totalRows);
 
   return (

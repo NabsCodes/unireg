@@ -13,7 +13,7 @@ export const pageSeo = {
     dashboard: {
       title: "Admin Dashboard",
       description:
-        "Manage academic setup, course offerings, registrations, and result oversight.",
+        "Manage academic setup, course offerings, registrations, and registry corrections.",
       path: "/admin/dashboard",
     },
     departments: {
@@ -55,13 +55,13 @@ export const pageSeo = {
     auditLogs: {
       title: "Audit Logs",
       description:
-        "Review audit entries for result changes, registration actions, and admin updates.",
+        "Readable history of who changed result scores, for which student and course.",
       path: "/admin/audit-logs",
     },
     results: {
-      title: "Result Oversight",
+      title: "Result Corrections",
       description:
-        "Review registered students and enter or correct CA and exam scores for any offering.",
+        "Review lecturer-uploaded scores and apply audited registry corrections when required.",
       path: "/admin/results",
     },
     gradeScale: {

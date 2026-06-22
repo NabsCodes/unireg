@@ -79,8 +79,8 @@ export type AuditLogRow = {
   timestamp: string;
   actor: string;
   action: string;
-  entity: string;
-  detail: string;
+  summary: string;
+  searchText: string;
 };
 
 export type StudentResultRow = {

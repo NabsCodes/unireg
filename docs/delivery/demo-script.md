@@ -197,9 +197,11 @@ Optional: show ERD slide or `docs/database/er-diagram.md` for 30 seconds.
 
 ---
 
-### Step 14 — Admin audit
+### Step 14 — Admin audit (optional: result corrections)
 
 - Logout → Login as **admin**
+- **Primary demo path ends at lecturer upload + student transcript.**
+- Optional: **Result Corrections** (`/admin/results`) — only to show registry can fix a score with audit trail; do not use as the main upload demo.
 - **Audit Logs** (`/admin/audit-logs`)
 - Find the result upload event
 

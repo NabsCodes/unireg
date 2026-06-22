@@ -71,6 +71,7 @@ export function AdminGradeScaleView() {
           data={sorted}
           emptyDescription="Grade scale rows should be seeded in PostgreSQL."
           emptyTitle="No grade scale configured"
+          showPagination={false}
           showSerialNumber={false}
         />
       </QueryState>

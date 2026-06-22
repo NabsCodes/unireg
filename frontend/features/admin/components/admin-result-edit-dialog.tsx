@@ -65,8 +65,9 @@ export function AdminResultEditDialog({
       onOpenChange(false);
       setFeedback({
         tone: "success",
-        title: row.status === "Uploaded" ? "Scores updated" : "Scores saved",
-        description: `${row.studentName}'s result was saved. Grade, GPA, and audit log update automatically in PostgreSQL.`,
+        title:
+          row.status === "Uploaded" ? "Correction saved" : "Correction applied",
+        description: `${row.studentName}'s result was updated by the registry. Grade, GPA, and audit log refresh automatically in PostgreSQL.`,
       });
     } catch (error) {
       setFeedback({
@@ -85,14 +86,16 @@ export function AdminResultEditDialog({
   return (
     <>
       <RecordFormDialog
-        description={`Registry override for ${row.studentName} (${row.matricNo}). CA is out of 40 and exam out of 60.`}
+        description={`Registry correction for ${row.studentName} (${row.matricNo}). Lecturers normally enter scores first; use this only when a correction is required. CA is out of 40 and exam out of 60.`}
         form={form}
         isSubmitting={updateMutation.isPending}
         onOpenChange={onOpenChange}
         onSubmit={onSubmit}
         open={open}
-        submitLabel={isEdit ? "Update scores" : "Save scores"}
-        title={isEdit ? "Edit student scores" : "Enter student scores"}
+        submitLabel={isEdit ? "Save correction" : "Apply correction"}
+        title={
+          isEdit ? "Correct published scores" : "Apply registry correction"
+        }
       >
         <ScoreFormField
           control={form.control}
@@ -131,7 +134,7 @@ export function AdminResultEditAction({
     <>
       <Button onClick={() => setOpen(true)} size="sm" variant="outline">
         <Pencil />
-        {row.status === "Uploaded" ? "Edit scores" : "Enter scores"}
+        {row.status === "Uploaded" ? "Correct scores" : "Apply correction"}
       </Button>
       <AdminResultEditDialog
         offeringId={offeringId}

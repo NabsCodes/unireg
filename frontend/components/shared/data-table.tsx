@@ -50,6 +50,7 @@ type DataTableProps<TData, TValue> = {
   emptyDescription?: string;
   initialPageSize?: number;
   showSerialNumber?: boolean;
+  showPagination?: boolean;
   hiddenColumnIds?: string[];
   renderMobileCard?: (row: Row<TData>) => ReactNode;
 };
@@ -65,6 +66,7 @@ export function DataTable<TData, TValue>({
   emptyDescription,
   initialPageSize = 10,
   showSerialNumber = true,
+  showPagination = true,
   hiddenColumnIds = [],
   renderMobileCard,
 }: DataTableProps<TData, TValue>) {
@@ -240,7 +242,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} />
+      {showPagination ? <DataTablePagination table={table} /> : null}
     </div>
   );
 }

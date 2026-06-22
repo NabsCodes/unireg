@@ -5,6 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { PageHeader } from "@/components/layout/page-header";
 import { DataTable } from "@/components/shared/data-table";
 import { QueryState } from "@/components/shared/query-state";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { auditActionFilter } from "@/content/data/table-filters";
 import { useAdminAuditLogs } from "@/features/admin/api/use-admin-lists";
 import { PortalPage } from "@/features/portal/components/portal-page";
@@ -13,7 +14,8 @@ import type { AuditLogRow } from "@/types/academic";
 const columns: ColumnDef<AuditLogRow>[] = [
   {
     accessorKey: "timestamp",
-    header: "Timestamp",
+    header: "When",
+    size: 140,
     cell: ({ row }) => (
       <span className="text-muted-foreground text-xs whitespace-nowrap">
         {row.getValue("timestamp")}
@@ -22,27 +24,35 @@ const columns: ColumnDef<AuditLogRow>[] = [
   },
   {
     accessorKey: "actor",
-    header: "Actor",
+    header: "Who",
+    size: 180,
     cell: ({ row }) => (
-      <span className="font-medium">{row.getValue("actor")}</span>
+      <span className="font-medium whitespace-nowrap">
+        {row.getValue("actor")}
+      </span>
     ),
   },
   {
     accessorKey: "action",
     header: "Action",
+    size: 150,
+    cell: ({ row }) => {
+      const action = row.getValue("action") as string;
+      const tone = action === "Result updated" ? "pending" : "completed";
+      return <StatusBadge label={action} tone={tone} />;
+    },
   },
   {
-    accessorKey: "entity",
-    header: "Entity",
-  },
-  {
-    accessorKey: "detail",
-    header: "Detail",
+    accessorKey: "summary",
+    header: "What changed",
     cell: ({ row }) => (
-      <span className="text-muted-foreground max-w-md text-sm">
-        {row.getValue("detail")}
-      </span>
+      <p className="text-sm leading-relaxed">{row.getValue("summary")}</p>
     ),
+  },
+  {
+    accessorKey: "searchText",
+    header: "Search",
+    enableHiding: true,
   },
 ];
 
@@ -53,7 +63,7 @@ export function AdminAuditLogsView() {
     <PortalPage>
       <PageHeader
         title="Audit Logs"
-        description="Review audit entries for result changes, registration actions, and admin updates."
+        description="Readable history of result uploads and registry corrections."
       />
       <QueryState
         error={error}
@@ -65,11 +75,13 @@ export function AdminAuditLogsView() {
         <DataTable
           columns={columns}
           data={data}
-          emptyDescription="Audit entries will appear here as users perform registration and result actions."
+          emptyDescription="Audit entries will appear here when lecturers upload scores or registry corrections are applied."
           emptyTitle="No audit entries"
           filters={[auditActionFilter]}
-          searchKey="actor"
-          searchPlaceholder="Search by actor or action..."
+          searchKey="searchText"
+          searchPlaceholder="Search by student, course, or actor..."
+          hiddenColumnIds={["searchText"]}
+          showSerialNumber={false}
         />
       </QueryState>
     </PortalPage>

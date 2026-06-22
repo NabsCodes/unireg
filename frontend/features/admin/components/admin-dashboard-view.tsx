@@ -22,7 +22,7 @@ export function AdminDashboardView() {
     <PortalPage>
       <PageHeader
         title="Admin Dashboard"
-        description="Manage academic setup, course offerings, registrations, and result oversight."
+        description="Manage academic setup, course offerings, registrations, and registry corrections."
       />
 
       <QueryState
