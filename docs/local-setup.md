@@ -269,6 +269,24 @@ cd backend
 source .venv/bin/activate
 ```
 
+### `OPTIONS ... 400 Bad Request` on login (Failed to fetch)
+
+The browser sends a CORS preflight before `POST /api/auth/login`. A **400 on OPTIONS** means the frontend origin is not allowed by the backend.
+
+1. Open the app using **`http://localhost:3000`** or **`http://127.0.0.1:3000`** (not a random port unless you add it to CORS).
+2. In `backend/.env`, ensure:
+
+```env
+BACKEND_CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+```
+
+3. Restart uvicorn after changing `.env`.
+4. In development, the backend also allows any `localhost` / `127.0.0.1` port via regex — pull latest backend if you still see 400.
+
+### `GET /api/students/me/course-offerings` returns 500
+
+If the backend log shows `can_drop ... Input should be a valid boolean ... None`, pull the latest backend code (fixed with `COALESCE(..., false)` in the offerings query) and restart uvicorn.
+
 ### Frontend loads but data is empty or errors appear
 
 Usually one of these:

@@ -182,18 +182,22 @@ def list_available_course_offerings_for_student(student_id: int) -> list[dict]:
             (cr_student.reg_id IS NOT NULL AND cr_student.status = 'registered')
                 AS is_registered,
             cr_student.status AS registration_status,
-            EXISTS (
-                SELECT 1
-                FROM result r
-                WHERE r.reg_id = cr_student.reg_id
+            COALESCE(
+                EXISTS (
+                    SELECT 1
+                    FROM result r
+                    WHERE r.reg_id = cr_student.reg_id
+                ),
+                false
             ) AS has_results,
-            (
+            COALESCE(
                 cr_student.status = 'registered'
                 AND NOT EXISTS (
                     SELECT 1
                     FROM result r
                     WHERE r.reg_id = cr_student.reg_id
-                )
+                ),
+                false
             ) AS can_drop
         FROM course_offering co
         JOIN course c ON c.course_id = co.course_id
